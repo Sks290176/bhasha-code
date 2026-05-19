@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bhasha Code — Python सीखो अपनी भाषा में</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #222; min-height: 100vh; }
+  .header { background: #1a1a2e; color: white; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 40px; height: 40px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header p { font-size: 13px; color: #aaa; margin-top: 2px; }
+  .lang-select { padding: 8px 12px; border-radius: 8px; border: 1px solid #444; background: #2a2a4e; color: white; font-size: 14px; cursor: pointer; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+  .lang-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 20px; }
+  .lang-card { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; text-align: center; font-size: 13px; transition: all 0.2s; }
+  .lang-card:hover { border-color: #e94560; }
+  .lang-card.active { border: 2px solid #e94560; background: #fff0f3; color: #e94560; font-weight: 600; }
+  .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media(max-width: 600px) { .editor-grid { grid-template-columns: 1fr; } }
+  .label { font-size: 11px; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  textarea { width: 100%; font-family: 'Courier New', monospace; font-size: 13px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #1e1e2e; color: #cdd6f4; resize: vertical; min-height: 200px; line-height: 1.6; }
+  .output-box { min-height: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #1e1e2e; color: #f38ba8; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; overflow-y: auto; line-height: 1.6; }
+  .output-box.ok { color: #a6e3a1; }
+  .output-box.waiting { color: #6c7086; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .btn-primary { display: flex; align-items: center; gap: 6px; padding: 10px 20px; background: #e94560; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+  .btn-primary:hover { background: #c73652; }
+  .btn-secondary { padding: 10px 16px; background: white; color: #444; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .btn-secondary:hover { background: #f5f5f5; border-color: #e94560; color: #e94560; }
+  .explanation { border-radius: 12px; border: 1px solid #ddd; overflow: hidden; margin-bottom: 16px; background: white; display: none; }
+  .exp-header { padding: 12px 16px; background: #f8f9fa; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
+  .exp-header span { font-size: 14px; font-weight: 600; color: #222; }
+  .lang-badge { margin-left: auto; font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #e8f4fd; color: #1565c0; font-weight: 600; }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px 16px; border-bottom: 1px solid #eee; }
+  .meta-card { padding: 10px 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee; }
+  .meta-label { font-size: 10px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .meta-val { font-size: 13px; font-weight: 600; }
+  .meta-val.err { color: #d32f2f; font-family: 'Courier New', monospace; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #eee; }
+  @media(max-width: 600px) { .detail-grid { grid-template-columns: 1fr; } .meta-grid { grid-template-columns: 1fr 1fr; } }
+  .detail-card { padding: 12px; border-radius: 8px; }
+  .detail-card.danger { background: #fdecea; border: 1px solid #f5c6cb; }
+  .detail-card.success { background: #e8f5e9; border: 1px solid #c8e6c9; }
+  .detail-card.info { background: #e3f2fd; border: 1px solid #bbdefb; }
+  .detail-label { font-size: 10px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .detail-label.danger { color: #c62828; }
+  .detail-label.success { color: #2e7d32; }
+  .detail-label.info { color: #1565c0; }
+  .detail-text { font-size: 13px; color: #333; line-height: 1.7; white-space: pre-line; }
+  .remember-row { padding: 0 16px 16px; }
+  .steps-section { display: none; margin-bottom: 20px; }
+  .step-item { display: flex; gap: 10px; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
+  .step-item.normal { background: #f8f9fa; border: 1px solid #eee; }
+  .step-item.ok { background: #e8f5e9; border: 1px solid #c8e6c9; }
+  .step-item.err { background: #fdecea; border: 1px solid #f5c6cb; }
+  .step-num { font-size: 11px; color: #888; min-width: 16px; margin-top: 2px; font-weight: 600; }
+  .step-text { font-size: 12px; font-family: 'Courier New', monospace; color: #333; line-height: 1.6; }
+  .error-examples { border-top: 1px solid #eee; padding-top: 16px; }
+  .error-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 8px; }
+  .error-card { padding: 10px 12px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; transition: all 0.2s; }
+  .error-card:hover { border-color: #e94560; background: #fff0f3; }
+  .error-card .etype { font-size: 12px; font-family: 'Courier New', monospace; color: #d32f2f; margin-bottom: 2px; font-weight: 600; }
+  .error-card .edesc { font-size: 12px; color: #666; }
+  .powered { text-align: center; padding: 20px; font-size: 12px; color: #aaa; }
+  .powered a { color: #e94560; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">🇮🇳</div>
+    <div>
+      <h1 id="app-title">Bhasha Code</h1>
+      <p id="app-subtitle">Python सीखो — अपनी भाषा में</p>
+    </div>
+  </div>
+  <select class="lang-select" id="lang-select" onchange="switchLanguage(this.value)">
+    <option value="hi">🇮🇳 हिंदी</option>
+    <option value="te">🇮🇳 తెలుగు</option>
+    <option value="ta">🇮🇳 தமிழ்</option>
+    <option value="kn">🇮🇳 ಕನ್ನಡ</option>
+    <option value="bn">🇮🇳 বাংলা</option>
+    <option value="mr">🇮🇳 मराठी</option>
+    <option value="gu">🇮🇳 ગુજરાતી</option>
+    <option value="pa">🇮🇳 ਪੰਜਾਬੀ</option>
+    <option value="ml">🇮🇳 മലയാളം</option>
+    <option value="or">🇮🇳 ଓଡ଼ିଆ</option>
+  </select>
+</div>
+
+<div class="container">
+
+  <div class="lang-grid" id="lang-cards"></div>
+
+  <div class="editor-grid">
+    <div>
+      <div class="label" id="label-write">अपना Code यहाँ लिखो</div>
+      <textarea id="code-input" spellcheck="false" placeholder="# Python code यहाँ लिखो..."></textarea>
+    </div>
+    <div>
+      <div class="label" id="label-output">Output / गलती</div>
+      <div class="output-box waiting" id="output-box">Code चलाओ — यहाँ output दिखेगा...</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-primary" onclick="runCode()">▶ <span id="btn-run">Code चलाओ</span></button>
+    <button class="btn-secondary" onclick="clearAll()" id="btn-clear">🗑 साफ करो</button>
+    <button class="btn-secondary" onclick="loadExample('syntax')">SyntaxError</button>
+    <button class="btn-secondary" onclick="loadExample('type')">TypeError</button>
+    <button class="btn-secondary" onclick="loadExample('name')">NameError</button>
+    <button class="btn-secondary" onclick="loadExample('index')">IndexError</button>
+    <button class="btn-secondary" onclick="loadExample('zerodiv')">ZeroDivisionError</button>
+  </div>
+
+  <div class="explanation" id="explanation">
+    <div class="exp-header">
+      <span>⚠️</span>
+      <span id="label-explain">गलती क्यों हुई</span>
+      <span class="lang-badge" id="lang-badge">हिंदी</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label" id="label-errname">Error का नाम</div>
+        <div class="meta-val err" id="error-name"></div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label" id="label-line">Line नंबर</div>
+        <div class="meta-val" id="error-line"></div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label" id="label-level">गंभीरता</div>
+        <div class="meta-val" id="error-severity"></div>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-card danger">
+        <div class="detail-label danger" id="label-what">❌ क्या हुआ</div>
+        <div class="detail-text" id="what-happened"></div>
+      </div>
+      <div class="detail-card success">
+        <div class="detail-label success" id="label-fix">✅ ऐसे ठीक करो</div>
+        <div class="detail-text" id="how-to-fix"></div>
+      </div>
+    </div>
+    <div class="remember-row">
+      <div class="detail-card info">
+        <div class="detail-label info" id="label-remember">💡 याद रखो</div>
+        <div class="detail-text" id="remember-this"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-section" id="steps-section">
+    <div class="label" id="label-steps">Step by Step — Code कैसे चला</div>
+    <div id="steps-container" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="error-examples">
+    <div class="label" id="label-examples">Common Errors — क्लिक करके सीखो</div>
+    <div class="error-cards" id="error-cards"></div>
+  </div>
+
+</div>
+
+<div class="powered">
+  Built with ❤️ for India &nbsp;|&nbsp; 
+  <a href="https://bharatiyabhasha.ai" target="_blank">Powered by Bhasini</a> &nbsp;|&nbsp;
+  Open Source — <a href="https://github.com/Sks290176/bhasha-code" target="_blank">GitHub</a>
+</div>
+
+<script>
+const langs = {
+  hi: { name:"हिंदी",badge:"हिंदी",title:"Bhasha Code",subtitle:"Python सीखो — अपनी भाषा में",write:"अपना Code यहाँ लिखो",output:"Output / गलती",run:"Code चलाओ",clear:"साफ करो",explain:"गलती क्यों हुई",errname:"Error का नाम",line:"Line नंबर",level:"गंभीरता",what:"❌ क्या हुआ",fix:"✅ ऐसे ठीक करो",remember:"💡 याद रखो",steps:"Step by Step — Code कैसे चला",examples:"Common Errors — क्लिक करके सीखो",placeholder:"Code चलाओ — यहाँ output दिखेगा...",
+    errors:{
+      syntax:{what:"आपने if/def/for के बाद colon (:) लगाना भूल गए। Python में यह ज़रूरी है।",fix:"Line के अंत में colon (:) लगाओ।\nसही: if name == 'Rahul':",remember:"if, for, while, def के बाद हमेशा colon (:) लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},
+      type:{what:"String और number को + से directly नहीं जोड़ सकते।",fix:"str() use करो:\nmessage = 'उम्र: ' + str(age)\nया f-string: f'उम्र: {age}'",remember:"Number को text के साथ जोड़ना हो तो str() लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},
+      name:{what:"Variable use करने से पहले define नहीं किया।",fix:"Variable पहले define करो:\nstudent_name = 'Priya'\nprint(student_name)",remember:"Python ऊपर से नीचे चलती है। Variable पहले define करो।",line:"Line 2",sev:"🟡 ध्यान दो"},
+      index:{what:"List में उतने items नहीं हैं जितना index माँगा।",fix:"fruits[2] लिखो (0 से शुरू होता है)\nया fruits[-1] आखिरी item के लिए",remember:"List का index 0 से शुरू होता है।",line:"Line 4",sev:"🟡 ध्यान दो"},
+      zerodiv:{what:"किसी भी number को 0 से divide नहीं कर सकते।",fix:"if b != 0:\n    result = a / b\nelse:\n    print('0 से divide नहीं हो सकता')",remember:"Divide करने से पहले check करो कि divisor 0 तो नहीं।",line:"Line 4",sev:"🔴 ज़रूरी ठीक करो"}
+    }
+  },
+  te: { name:"తెలుగు",badge:"తెలుగు",title:"Bhasha Code",subtitle:"Python నేర్చుకో — నీ భాషలో",write:"నీ Code ఇక్కడ రాయి",output:"Output / తప్పు",run:"Code నడపండి",clear:"తుడిచివేయండి",explain:"తప్పు ఎందుకు జరిగింది",errname:"Error పేరు",line:"Line నంబర్",level:"తీవ్రత",what:"❌ ఏం జరిగింది",fix:"✅ ఇలా సరిచేయండి",remember:"💡 గుర్తుంచుకోండి",steps:"Step by Step",examples:"Common Errors — క్లిక్ చేసి నేర్చుకోండి",placeholder:"Code నడపండి — ఇక్కడ output కనిపిస్తుంది...",
+    errors:{
+      syntax:{what:"if/def/for తర్వాత colon (:) పెట్టడం మర్చిపోయారు.",fix:"సరైనది: if name == 'Rahul':",remember:"if, for, while, def తర్వాత ఎప్పుడూ colon (:) పెట్టండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},
+      type:{what:"String మరియు number ని + తో నేరుగా కలపలేరు.",fix:"str() వాడండి:\nmessage = 'వయసు: ' + str(age)",remember:"Number ని text తో కలపాలంటే str() వాడండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},
+      name:{what:"Variable define చేయకముందే use చేశారు.",fix:"ముందు define చేయండి:\nstudent_name = 'Priya'",remember:"Python పైన నుండి కిందకు నడుస్తుంది.",line:"Line 2",sev:"🟡 జాగ్రత్తగా చూడండి"},
+      index:{what:"List లో అంత items లేవు.",fix:"fruits[2] లేదా fruits[-1] వాడండి",remember:"List index 0 నుండి మొదలవుతుంది.",line:"Line 4",sev:"🟡 జాగ్రత్తగా చూడండి"},
+      zerodiv:{what:"ఏ number నైనా 0 తో divide చేయలేరు.",fix:"if b != 0:\n    result = a / b",remember:"Divide చేయడానికి ముందు check చేయండి.",line:"Line 4",sev:"🔴 తప్పక సరిచేయండి"}
+    }
+  },
+  ta: { name:"தமிழ்",badge:"தமிழ்",title:"Bhasha Code",subtitle:"Python கற்றுக்கொள் — உன் மொழியில்",write:"உன் Code இங்கே எழுது",output:"Output / பிழை",run:"Code இயக்கு",clear:"அழி",explain:"பிழை ஏன் வந்தது",errname:"பிழை பெயர்",line:"வரி எண்",level:"தீவிரம்",what:"❌ என்ன ஆனது",fix:"✅ இப்படி சரிசெய்",remember:"💡 நினைவில் வை",steps:"படி படியாக",examples:"பொதுவான பிழைகள் — கிளிக் செய்து கற்கவும்",placeholder:"Code இயக்கு — இங்கே output தெரியும்...",
+    errors:{
+      syntax:{what:"if/def/for க்கு பிறகு colon (:) போட மறந்துவிட்டீர்கள்.",fix:"சரியானது: if name == 'Rahul':",remember:"if, for, while, def க்கு பிறகு எப்போதும் colon (:) போடுங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},
+      type:{what:"String மற்றும் number ஐ + மூலம் நேரடியாக இணைக்க முடியாது.",fix:"str() பயன்படுத்துங்கள்:\nmessage = 'வயது: ' + str(age)",remember:"Number ஐ text உடன் இணைக்க str() பயன்படுத்துங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},
+      name:{what:"Variable ஐ define செய்யாமல் பயன்படுத்தினீர்கள்.",fix:"முதலில்:\nstudent_name = 'Priya'",remember:"Python மேலிருந்து கீழே இயங்கும்.",line:"வரி 2",sev:"🟡 கவனமாக பாருங்கள்"},
+      index:{what:"List ல் அவ்வளவு items இல்லை.",fix:"fruits[2] அல்லது fruits[-1]",remember:"List index 0 இல் இருந்து தொடங்கும்.",line:"வரி 4",sev:"🟡 கவனமாக பாருங்கள்"},
+      zerodiv:{what:"எந்த எண்ணையும் 0 ஆல் வகுக்க முடியாது.",fix:"if b != 0:\n    result = a / b",remember:"வகுக்கும் முன் சரிபார்க்கவும்.",line:"வரி 4",sev:"🔴 கட்டாயம் சரிசெய்"}
+    }
+  },
+  kn: { name:"ಕನ್ನಡ",badge:"ಕನ್ನಡ",title:"Bhasha Code",subtitle:"Python ಕಲಿ — ನಿನ್ನ ಭಾಷೆಯಲ್ಲಿ",write:"ನಿನ್ನ Code ಇಲ್ಲಿ ಬರೆ",output:"Output / ತಪ್ಪು",run:"Code ಚಲಾಯಿಸಿ",clear:"ಅಳಿಸಿ",explain:"ತಪ್ಪು ಏಕೆ ಆಯಿತು",errname:"Error ಹೆಸರು",line:"Line ಸಂಖ್ಯೆ",level:"ತೀವ್ರತೆ",what:"❌ ಏನಾಯಿತು",fix:"✅ ಹೀಗೆ ಸರಿಪಡಿಸಿ",remember:"💡 ನೆನಪಿಡಿ",steps:"ಹಂತ ಹಂತವಾಗಿ",examples:"Common Errors — ಕ್ಲಿಕ್ ಮಾಡಿ ಕಲಿಯಿರಿ",placeholder:"Code ಚಲಾಯಿಸಿ — ಇಲ್ಲಿ output ಕಾಣಿಸುತ್ತದೆ...",
+    errors:{
+      syntax:{what:"if/def/for ನಂತರ colon (:) ಹಾಕಲು ಮರೆತಿದ್ದೀರಿ.",fix:"ಸರಿಯಾದದ್ದು: if name == 'Rahul':",remember:"if, for, while, def ನಂತರ ಯಾವಾಗಲೂ colon (:) ಹಾಕಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},
+      type:{what:"String ಮತ್ತು number ಅನ್ನು + ಮೂಲಕ ನೇರವಾಗಿ ಜೋಡಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"str() ಬಳಸಿ:\nmessage = 'ವಯಸ್ಸು: ' + str(age)",remember:"Number ಅನ್ನು text ಜೊತೆ ಸೇರಿಸಲು str() ಬಳಸಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},
+      name:{what:"Variable define ಮಾಡದೆ ಬಳಸಿದ್ದೀರಿ.",fix:"ಮೊದಲು:\nstudent_name = 'Priya'",remember:"Python ಮೇಲಿನಿಂದ ಕೆಳಕ್ಕೆ ಚಲಿಸುತ್ತದೆ.",line:"ಸಾಲು 2",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},
+      index:{what:"List ನಲ್ಲಿ ಅಷ್ಟು items ಇಲ್ಲ.",fix:"fruits[2] ಅಥವಾ fruits[-1]",remember:"List index 0 ರಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.",line:"ಸಾಲು 4",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},
+      zerodiv:{what:"ಯಾವ ಸಂಖ್ಯೆಯನ್ನೂ 0 ರಿಂದ ಭಾಗಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"if b != 0:\n    result = a / b",remember:"ಭಾಗಿಸುವ ಮೊದಲು ಖಚಿತಪಡಿಸಿ.",line:"ಸಾಲು 4",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"}
+    }
+  },
+  bn: { name:"বাংলা",badge:"বাংলা",title:"Bhasha Code",subtitle:"Python শেখো — তোমার ভাষায়",write:"তোমার Code এখানে লেখো",output:"Output / ভুল",run:"Code চালাও",clear:"মুছে ফেলো",explain:"ভুল কেন হলো",errname:"Error এর নাম",line:"Line নম্বর",level:"গুরুত্ব",what:"❌ কী হয়েছে",fix:"✅ এভাবে ঠিক করো",remember:"💡 মনে রেখো",steps:"ধাপে ধাপে",examples:"Common Errors — ক্লিক করে শেখো",placeholder:"Code চালাও — এখানে output দেখাবে...",
+    errors:{
+      syntax:{what:"if/def/for এর পরে colon (:) দিতে ভুলে গেছ।",fix:"সঠিক: if name == 'Rahul':",remember:"if, for, while, def এর পরে সবসময় colon (:) দাও।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},
+      type:{what:"String এবং number কে + দিয়ে সরাসরি যোগ করা যায় না।",fix:"str() ব্যবহার করো:\nmessage = 'বয়স: ' + str(age)",remember:"Number কে text এর সাথে যোগ করতে str() ব্যবহার করো।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},
+      name:{what:"Variable define করার আগেই ব্যবহার করেছ।",fix:"আগে:\nstudent_name = 'Priya'",remember:"Python উপর থেকে নিচে চলে।",line:"Line 2",sev:"🟡 মনোযোগ দাও"},
+      index:{what:"List এ ততগুলো items নেই।",fix:"fruits[2] বা fruits[-1]",remember:"List এর index 0 থেকে শুরু।",line:"Line 4",sev:"🟡 মনোযোগ দাও"},
+      zerodiv:{what:"কোনো সংখ্যাকে 0 দিয়ে ভাগ করা যায় না।",fix:"if b != 0:\n    result = a / b",remember:"ভাগ করার আগে check করো।",line:"Line 4",sev:"🔴 অবশ্যই ঠিক করো"}
+    }
+  },
+  mr: { name:"मराठी",badge:"मराठी",title:"Bhasha Code",subtitle:"Python शिका — तुमच्या भाषेत",write:"तुमचा Code इथे लिहा",output:"Output / चूक",run:"Code चालवा",clear:"साफ करा",explain:"चूक का झाली",errname:"Error चे नाव",line:"Line नंबर",level:"गांभीर्य",what:"❌ काय झाले",fix:"✅ असे दुरुस्त करा",remember:"💡 लक्षात ठेवा",steps:"एक एक पाऊल",examples:"Common Errors — क्लिक करून शिका",placeholder:"Code चालवा — इथे output दिसेल...",
+    errors:{
+      syntax:{what:"if/def/for नंतर colon (:) टाकायला विसरलात.",fix:"बरोबर: if name == 'Rahul':",remember:"if, for, while, def नंतर नेहमी colon (:) टाका.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},
+      type:{what:"String आणि number ला + ने थेट जोडता येत नाही.",fix:"str() वापरा:\nmessage = 'वय: ' + str(age)",remember:"Number ला text सोबत जोडायचे असल्यास str() वापरा.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},
+      name:{what:"Variable define करण्यापूर्वीच वापरलात.",fix:"आधी:\nstudent_name = 'Priya'",remember:"Python वरून खाली चालते.",line:"Line 2",sev:"🟡 लक्ष द्या"},
+      index:{what:"List मध्ये तेवढे items नाहीत.",fix:"fruits[2] किंवा fruits[-1]",remember:"List चा index 0 पासून सुरू होतो.",line:"Line 4",sev:"🟡 लक्ष द्या"},
+      zerodiv:{what:"कोणत्याही संख्येला 0 ने भागता येत नाही.",fix:"if b != 0:\n    result = a / b",remember:"भागाकार करण्यापूर्वी तपासा.",line:"Line 4",sev:"🔴 नक्की दुरुस्त करा"}
+    }
+  },
+  gu: { name:"ગુજરાતી",badge:"ગુજરાતી",title:"Bhasha Code",subtitle:"Python શીખો — તમારી ભાષામાં",write:"તમારો Code અહીં લખો",output:"Output / ભૂલ",run:"Code ચલાવો",clear:"સાફ કરો",explain:"ભૂલ કેમ થઈ",errname:"Error નું નામ",line:"Line નંબર",level:"ગંભીરતા",what:"❌ શું થયું",fix:"✅ આ રીતે સુધારો",remember:"💡 યાદ રાખો",steps:"એક એક પગલું",examples:"Common Errors — ક્લિક કરીને શીખો",placeholder:"Code ચલાવો — અહીં output દેખાશે...",
+    errors:{
+      syntax:{what:"if/def/for પછી colon (:) મૂકવાનું ભૂલી ગયા.",fix:"સાચું: if name == 'Rahul':",remember:"if, for, while, def પછી હંમેશા colon (:) મૂકો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},
+      type:{what:"String અને number ને + વડે સીધા જોડી ન શકાય.",fix:"str() વાપરો:\nmessage = 'ઉંમર: ' + str(age)",remember:"Number ને text સાથે જોડવા str() વાપરો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},
+      name:{what:"Variable define કર્યા વગર વાપર્યો.",fix:"પહેલા:\nstudent_name = 'Priya'",remember:"Python ઉપરથી નીચે ચાલે.",line:"Line 2",sev:"🟡 ધ્યાન આપો"},
+      index:{what:"List માં એટલા items નથી.",fix:"fruits[2] અથવા fruits[-1]",remember:"List નો index 0 થી શરૂ થાય.",line:"Line 4",sev:"🟡 ધ્યાન આપો"},
+      zerodiv:{what:"કોઈ પણ number ને 0 વડે ભાગ ન આપી શકાય.",fix:"if b != 0:\n    result = a / b",remember:"ભાગ આપતા પહેલા ચકાસો.",line:"Line 4",sev:"🔴 જરૂર સુધારો"}
+    }
+  },
+  pa: { name:"ਪੰਜਾਬੀ",badge:"ਪੰਜਾਬੀ",title:"Bhasha Code",subtitle:"Python ਸਿੱਖੋ — ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ",write:"ਆਪਣਾ Code ਇੱਥੇ ਲਿਖੋ",output:"Output / ਗਲਤੀ",run:"Code ਚਲਾਓ",clear:"ਸਾਫ਼ ਕਰੋ",explain:"ਗਲਤੀ ਕਿਉਂ ਹੋਈ",errname:"Error ਦਾ ਨਾਮ",line:"Line ਨੰਬਰ",level:"ਗੰਭੀਰਤਾ",what:"❌ ਕੀ ਹੋਇਆ",fix:"✅ ਇਸ ਤਰ੍ਹਾਂ ਠੀਕ ਕਰੋ",remember:"💡 ਯਾਦ ਰੱਖੋ",steps:"ਕਦਮ ਦਰ ਕਦਮ",examples:"Common Errors — ਕਲਿੱਕ ਕਰਕੇ ਸਿੱਖੋ",placeholder:"Code ਚਲਾਓ — ਇੱਥੇ output ਦਿਖੇਗਾ...",
+    errors:{
+      syntax:{what:"if/def/for ਤੋਂ ਬਾਅਦ colon (:) ਲਗਾਉਣਾ ਭੁੱਲ ਗਏ।",fix:"ਸਹੀ: if name == 'Rahul':",remember:"if, for, while, def ਤੋਂ ਬਾਅਦ ਹਮੇਸ਼ਾ colon (:) ਲਗਾਓ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},
+      type:{what:"String ਅਤੇ number ਨੂੰ + ਨਾਲ ਸਿੱਧਾ ਜੋੜ ਨਹੀਂ ਸਕਦੇ।",fix:"str() ਵਰਤੋ:\nmessage = 'ਉਮਰ: ' + str(age)",remember:"Number ਨੂੰ text ਨਾਲ ਜੋੜਨ ਲਈ str() ਵਰਤੋ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},
+      name:{what:"Variable define ਕੀਤੇ ਬਿਨਾਂ ਵਰਤਿਆ।",fix:"ਪਹਿਲਾਂ:\nstudent_name = 'Priya'",remember:"Python ਉੱਪਰ ਤੋਂ ਹੇਠਾਂ ਚੱਲਦੀ ਹੈ।",line:"Line 2",sev:"🟡 ਧਿਆਨ ਦਿਓ"},
+      index:{what:"List ਵਿੱਚ ਉਨੇ items ਨਹੀਂ ਹਨ।",fix:"fruits[2] ਜਾਂ fruits[-1]",remember:"List ਦਾ index 0 ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦਾ ਹੈ।",line:"Line 4",sev:"🟡 ਧਿਆਨ ਦਿਓ"},
+      zerodiv:{what:"ਕਿਸੇ ਵੀ number ਨੂੰ 0 ਨਾਲ ਭਾਗ ਨਹੀਂ ਦੇ ਸਕਦੇ।",fix:"if b != 0:\n    result = a / b",remember:"ਭਾਗ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚ ਕਰੋ।",line:"Line 4",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"}
+    }
+  },
+  ml: { name:"മലയാളം",badge:"മലയാളം",title:"Bhasha Code",subtitle:"Python പഠിക്കൂ — നിന്റെ ഭാഷയിൽ",write:"നിന്റെ Code ഇവിടെ എഴുതൂ",output:"Output / തെറ്റ്",run:"Code ഓടിക്കൂ",clear:"മായ്ക്കൂ",explain:"തെറ്റ് എന്തുകൊണ്ട്",errname:"Error പേര്",line:"Line നമ്പർ",level:"ഗൗരവം",what:"❌ എന്ത് സംഭവിച്ചു",fix:"✅ ഇങ്ങനെ ശരിയാക്കൂ",remember:"💡 ഓർക്കൂ",steps:"പടി പടിയായി",examples:"Common Errors — ക്ലിക്ക് ചെയ്ത് പഠിക്കൂ",placeholder:"Code ഓടിക്കൂ — ഇവിടെ output കാണാം...",
+    errors:{
+      syntax:{what:"if/def/for ന് ശേഷം colon (:) ഇടാൻ മറന്നു.",fix:"ശരി: if name == 'Rahul':",remember:"if, for, while, def ന് ശേഷം എപ്പോഴും colon (:) ഇടൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},
+      type:{what:"String ഉം number ഉം + ഉപയോഗിച്ച് നേരിട്ട് കൂട്ടാൻ പറ്റില്ല.",fix:"str() ഉപയോഗിക്കൂ:\nmessage = 'പ്രായം: ' + str(age)",remember:"Number നെ text ൽ ചേർക്കാൻ str() ഉപയോഗിക്കൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},
+      name:{what:"Variable define ചെയ്യാതെ ഉപയോഗിച്ചു.",fix:"ആദ്യം:\nstudent_name = 'Priya'",remember:"Python മുകളിൽ നിന്ന് താഴേക്ക് ഓടുന്നു.",line:"Line 2",sev:"🟡 ശ്രദ്ധിക്കൂ"},
+      index:{what:"List ൽ അത്രയും items ഇല്ല.",fix:"fruits[2] അല്ലെങ്കിൽ fruits[-1]",remember:"List index 0 മുതൽ തുടങ്ങുന്നു.",line:"Line 4",sev:"🟡 ശ്രദ്ധിക്കൂ"},
+      zerodiv:{what:"ഒരു സംഖ്യയെ 0 കൊണ്ട് ഹരിക്കാൻ പറ്റില്ല.",fix:"if b != 0:\n    result = a / b",remember:"ഹരിക്കുന്നതിന് മുൻപ് ഉറപ്പാക്കൂ.",line:"Line 4",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"}
+    }
+  },
+  or: { name:"ଓଡ଼ିଆ",badge:"ଓଡ଼ିଆ",title:"Bhasha Code",subtitle:"Python ଶିଖ — ନିଜ ଭାଷାରେ",write:"ତୁମର Code ଏଠାରେ ଲେଖ",output:"Output / ଭୁଲ",run:"Code ଚଲାଅ",clear:"ସଫା କର",explain:"ଭୁଲ କାହିଁକି ହେଲା",errname:"Error ର ନାମ",line:"Line ନମ୍ବର",level:"ଗୁରୁତ୍ୱ",what:"❌ କ'ଣ ହେଲା",fix:"✅ ଏହିପରି ଠିକ୍ କର",remember:"💡 ମନେ ରଖ",steps:"ପଦକ୍ରମେ",examples:"Common Errors — କ୍ଲିକ୍ କରି ଶିଖ",placeholder:"Code ଚଲାଅ — ଏଠାରେ output ଦେଖାଯିବ...",
+    errors:{
+      syntax:{what:"if/def/for ପରେ colon (:) ଲଗାଇବା ଭୁଲି ଗଲ।",fix:"ଠିକ୍: if name == 'Rahul':",remember:"if, for, while, def ପରେ ସବୁବେଳେ colon (:) ଲଗାଅ।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},
+      type:{what:"String ଓ number କୁ + ରେ ସିଧା ଯୋଡ଼ି ହୁଏ ନାହିଁ।",fix:"str() ବ୍ୟବହାର କର:\nmessage = 'ବୟସ: ' + str(age)",remember:"Number କୁ text ସହ ଯୋଡ଼ିବାକୁ str() ବ୍ୟବହାର କର।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},
+      name:{what:"Variable define ନ କରି ବ୍ୟବହାର କଲ।",fix:"ଆଗରୁ:\nstudent_name = 'Priya'",remember:"Python ଉପରୁ ତଳକୁ ଚଲେ।",line:"Line 2",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},
+      index:{what:"List ରେ ସେତିକି items ନାହାଁନ୍ତି।",fix:"fruits[2] ବା fruits[-1]",remember:"List ର index 0 ରୁ ଆରମ୍ଭ ହୁଏ।",line:"Line 4",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},
+      zerodiv:{what:"କୌଣସି ସଂଖ୍ୟାକୁ 0 ରେ ଭାଗ କରି ହୁଏ ନାହିଁ।",fix:"if b != 0:\n    result = a / b",remember:"ଭାଗ କରିବା ଆଗରୁ ଯାଞ୍ଚ କର।",line:"Line 4",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"}
+    }
+  }
+};
+
+const codeExamples = {
+  syntax:`# Example: SyntaxError\nname = "Rahul"\nif name == "Rahul"\n    print("Namaste!")`,
+  type:`# Example: TypeError\nage = 20\nmessage = "Age is: " + age\nprint(message)`,
+  name:`# Example: NameError\nprint("Hello " + student_name)\nstudent_name = "Priya"`,
+  index:`# Example: IndexError\nfruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[3])`,
+  zerodiv:`# Example: ZeroDivisionError\na = 10\nb = 0\nresult = a / b\nprint(result)`
+};
+
+const errorOutputs = {
+  syntax:`  File "code.py", line 3\n    if name == "Rahul"\n                      ^\nSyntaxError: expected ':'`,
+  type:`Traceback (most recent call last):\n  File "code.py", line 3\n    message = "Age is: " + age\nTypeError: can only concatenate str (not "int") to str`,
+  name:`Traceback (most recent call last):\n  File "code.py", line 2\n    print("Hello " + student_name)\nNameError: name 'student_name' is not defined`,
+  index:`apple\nTraceback (most recent call last):\n  File "code.py", line 4\n    print(fruits[3])\nIndexError: list index out of range`,
+  zerodiv:`Traceback (most recent call last):\n  File "code.py", line 4\n    result = a / b\nZeroDivisionError: division by zero`
+};
+
+const errorDescs = {
+  hi:{syntax:"লিখতে গিয়ে ভুল",type:"গলত type এর data",name:"Variable নেই",index:"List থেকে বেরিয়ে গেছ",zerodiv:"শূন্য দিয়ে ভাগ"},
+};
+
+let currentLang = 'hi';
+let currentError = 'syntax';
+
+function switchLanguage(lang) {
+  currentLang = lang;
+  const L = langs[lang];
+  document.getElementById('app-title').textContent = L.title;
+  document.getElementById('app-subtitle').textContent = L.subtitle;
+  document.getElementById('label-write').textContent = L.write;
+  document.getElementById('label-output').textContent = L.output;
+  document.getElementById('btn-run').textContent = L.run;
+  document.getElementById('btn-clear').textContent = '🗑 ' + L.clear;
+  document.getElementById('label-explain').textContent = L.explain;
+  document.getElementById('label-errname').textContent = L.errname;
+  document.getElementById('label-line').textContent = L.line;
+  document.getElementById('label-level').textContent = L.level;
+  document.getElementById('label-what').textContent = L.what;
+  document.getElementById('label-fix').textContent = L.fix;
+  document.getElementById('label-remember').textContent = L.remember;
+  document.getElementById('label-steps').textContent = L.steps;
+  document.getElementById('label-examples').textContent = L.examples;
+  document.getElementById('lang-badge').textContent = L.badge;
+  renderLangCards();
+  renderErrorCards();
+  if (currentError) showError(currentError);
+}
+
+function renderLangCards() {
+  const c = document.getElementById('lang-cards');
+  c.innerHTML = '';
+  Object.entries(langs).forEach(([code, L]) => {
+    const d = document.createElement('div');
+    d.className = 'lang-card' + (code === currentLang ? ' active' : '');
+    d.textContent = L.name;
+    d.onclick = () => { document.getElementById('lang-select').value = code; switchLanguage(code); };
+    c.appendChild(d);
+  });
+}
+
+function renderErrorCards() {
+  const c = document.getElementById('error-cards');
+  c.innerHTML = '';
+  const errInfo = {
+    syntax:{desc:{hi:"लिखने में गलती",te:"రాయడంలో తప్పు",ta:"எழுதும் தவறு",kn:"ಬರೆಯುವಲ್ಲಿ ತಪ್ಪು",bn:"লেখায় ভুল",mr:"लिहण्यात चूक",gu:"લખવામાં ભૂલ",pa:"ਲਿਖਣ ਵਿੱਚ ਗਲਤੀ",ml:"എഴുത്തിലെ തെറ്റ്",or:"ଲେଖିବାରେ ଭୁଲ"}},
+    type:{desc:{hi:"गलत type का data",te:"తప్పు type data",ta:"தவறான type data",kn:"ತಪ್ಪು type data",bn:"ভুল type data",mr:"चुकीचा type",gu:"ખોટો type",pa:"ਗਲਤ type",ml:"തെറ്റായ type",or:"ଭୁଲ type"}},
+    name:{desc:{hi:"Variable नहीं मिला",te:"Variable దొరకలేదు",ta:"Variable இல்லை",kn:"Variable ಸಿಗಲಿಲ್ಲ",bn:"Variable নেই",mr:"Variable नाही",gu:"Variable મળ્યો નહિ",pa:"Variable ਨਹੀਂ ਮਿਲਿਆ",ml:"Variable കിട്ടിയില്ല",or:"Variable ମିଳିଲା ନାହିଁ"}},
+    index:{desc:{hi:"List से बाहर गए",te:"List బయటకి వెళ్ళారు",ta:"List வெளியே சென்றீர்கள்",kn:"List ಹೊರಕ್ಕೆ ಹೋದರು",bn:"List এর বাইরে",mr:"List बाहेर गेलात",gu:"List બહાર ગયા",pa:"List ਤੋਂ ਬਾਹਰ",ml:"List ൽ നിന്ന് പുറത്ത്",or:"List ବାହାରକୁ ଗଲ"}},
+    zerodiv:{desc:{hi:"Zero से भाग दिया",te:"Zero తో divide చేశారు",ta:"பூஜ்யத்தால் வகுத்தீர்கள்",kn:"Zero ನಿಂದ ಭಾಗಿಸಿದರು",bn:"শূন্য দিয়ে ভাগ",mr:"शून्याने भागलात",gu:"શૂન્ય વડે ભાગ",pa:"ਜ਼ੀਰੋ ਨਾਲ ਭਾਗ",ml:"പൂജ്യം കൊണ്ട് ഹരിച്ചു",or:"Zero ରେ ଭାଗ ଦେଲ"}}
+  };
+  Object.entries(errInfo).forEach(([type, info]) => {
+    const d = document.createElement('div');
+    d.className = 'error-card';
+    d.innerHTML = `<div class="etype">${type.charAt(0).toUpperCase()+type.slice(1)}Error</div><div class="edesc">${info.desc[currentLang]||info.desc.hi}</div>`;
+    d.onclick = () => loadExample(type);
+    c.appendChild(d);
+  });
+}
+
+function showError(type) {
+  currentError = type;
+  const L = langs[currentLang];
+  const err = L.errors[type];
+  if (!err) return;
+  const names = {syntax:'SyntaxError',type:'TypeError',name:'NameError',index:'IndexError',zerodiv:'ZeroDivisionError'};
+  document.getElementById('explanation').style.display = 'block';
+  document.getElementById('error-name').textContent = names[type];
+  document.getElementById('error-line').textContent = err.line;
+  const sev = document.getElementById('error-severity');
+  sev.textContent = err.sev;
+  sev.style.color = err.sev.includes('🔴') ? '#d32f2f' : '#f57c00';
+  document.getElementById('what-happened').textContent = err.what;
+  document.getElementById('how-to-fix').textContent = err.fix;
+  document.getElementById('remember-this').textContent = err.remember;
+  const stepMap = {
+    syntax:['Line 1: # Comment — skip','Line 2: name = "Rahul" ✅','Line 3: ❌ colon missing → SyntaxError'],
+    type:['Line 1: # Comment — skip','Line 2: age = 20 (number) ✅','Line 3: ❌ string + number → TypeError','Line 4: ❌ never reached'],
+    name:['Line 1: # Comment — skip','Line 2: ❌ student_name not found → NameError','Line 3: ❌ never reached'],
+    index:['Line 1: # Comment — skip','Line 2: fruits list created [0,1,2] ✅','Line 3: fruits[0] = apple ✅','Line 4: ❌ fruits[3] does not exist → IndexError'],
+    zerodiv:['Line 1: # Comment — skip','Line 2: a = 10 ✅','Line 3: b = 0 ✅','Line 4: ❌ 10 ÷ 0 = impossible → ZeroDivisionError','Line 5: ❌ never reached']
+  };
+  const ss = document.getElementById('steps-section');
+  ss.style.display = 'block';
+  const sc = document.getElementById('steps-container');
+  sc.innerHTML = '';
+  (stepMap[type]||[]).forEach((s,i) => {
+    const d = document.createElement('div');
+    d.className = 'step-item ' + (s.includes('❌') ? 'err' : s.includes('✅') ? 'ok' : 'normal');
+    d.innerHTML = `<span class="step-num">${i+1}</span><span class="step-text">${s}</span>`;
+    sc.appendChild(d);
+  });
+}
+
+function loadExample(type) {
+  document.getElementById('code-input').value = codeExamples[type]||'';
+  const ob = document.getElementById('output-box');
+  ob.className = 'output-box';
+  ob.textContent = errorOutputs[type]||'';
+  showError(type);
+}
+
+function runCode() {
+  const code = document.getElementById('code-input').value.trim();
+  const L = langs[currentLang];
+  const ob = document.getElementById('output-box');
+  if (!code) { ob.className='output-box waiting'; ob.textContent=L.placeholder; return; }
+  let detected = null;
+  if ((code.includes('if ')||code.includes('def ')||code.includes('for '))&&!code.match(/(?:if|def|for|while)[^\n]*:/m)) detected='syntax';
+  else if (code.match(/["']\s*\+\s*\w+/)&&!code.includes('str(')) detected='type';
+  else if (code.match(/\/\s*0\b/)||(code.includes('b = 0')&&code.includes('/ b'))) detected='zerodiv';
+  else if (code.match(/\[\d+\]/)&&code.match(/=\s*\[/)) detected='index';
+  if (detected) { ob.className='output-box'; ob.textContent=errorOutputs[detected]||''; showError(detected); }
+  else { document.getElementById('explanation').style.display='none'; document.getElementById('steps-section').style.display='none'; ob.className='output-box ok'; ob.textContent='✅ Code looks correct!\nNote: Full execution requires a Python runtime.\nAI-powered analysis coming soon.'; }
+}
+
+function clearAll() {
+  document.getElementById('code-input').value='';
+  const ob=document.getElementById('output-box');
+  ob.className='output-box waiting';
+  ob.textContent=langs[currentLang].placeholder;
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('steps-section').style.display='none';
+  currentError=null;
+}
+
+renderLangCards();
+renderErrorCards();
+loadExample('syntax');
+</script>
+</body>
+</html>
