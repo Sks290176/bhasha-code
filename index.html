@@ -7,108 +7,108 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #222; min-height: 100vh; }
-
-.header { background: #1a1a2e; color: white; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 100; }
-.header-left { display: flex; align-items: center; gap: 12px; }
-.logo { width: 38px; height: 38px; border-radius: 50%; background: #e94560; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: white; }
-.header h1 { font-size: 18px; font-weight: 700; }
-.header p { font-size: 12px; color: #aaa; margin-top: 1px; }
-.lang-select { padding: 7px 12px; border-radius: 8px; border: 1px solid #444; background: #2a2a4e; color: white; font-size: 13px; cursor: pointer; }
-
-.container { max-width: 1000px; margin: 0 auto; padding: 20px 16px; }
-
-.lang-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 7px; margin-bottom: 18px; }
-.lang-card { padding: 7px 10px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; text-align: center; font-size: 13px; transition: all 0.15s; }
-.lang-card:hover { border-color: #e94560; color: #e94560; }
-.lang-card.active { border: 2px solid #e94560; background: #fff0f3; color: #e94560; font-weight: 700; }
-
-.status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 8px 14px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; font-size: 13px; color: #2e7d32; }
-.status-bar.running { background: #fff8e1; border-color: #ffecb3; color: #f57c00; }
-.status-bar.error { background: #fdecea; border-color: #f5c6cb; color: #c62828; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; flex-shrink: 0; }
-.status-dot.pulse { animation: pulse 1s infinite; background: #f57c00; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-.editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-@media(max-width:640px){ .editor-grid { grid-template-columns: 1fr; } }
-
-.panel-label { font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-
-textarea#code-input { width: 100%; font-family: 'Courier New', monospace; font-size: 13px; padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #1e1e2e; color: #cdd6f4; resize: vertical; min-height: 220px; line-height: 1.7; outline: none; transition: border 0.2s; tab-size: 4; }
-textarea#code-input:focus { border-color: #e94560; }
-
-.output-box { min-height: 220px; padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: #1e1e2e; font-family: 'Courier New', monospace; font-size: 13px; white-space: pre-wrap; overflow-y: auto; line-height: 1.7; color: #6c7086; }
-.output-box.has-output { color: #a6e3a1; }
-.output-box.has-error { color: #f38ba8; }
-.output-box.waiting { color: #6c7086; }
-
-.input-row { display: flex; gap: 8px; margin-top: 8px; }
-.inline-input { flex: 1; font-family: 'Courier New', monospace; font-size: 13px; padding: 8px 12px; border: 1px solid #e94560; border-radius: 8px; background: #1e1e2e; color: #cdd6f4; outline: none; display: none; }
-.inline-input.visible { display: block; }
-.submit-input-btn { padding: 8px 16px; background: #e94560; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; display: none; }
-.submit-input-btn.visible { display: block; }
-
-.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
-.btn-run { display: flex; align-items: center; gap: 6px; padding: 10px 22px; background: #e94560; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 700; transition: background 0.2s; }
-.btn-run:hover { background: #c73652; }
-.btn-run:disabled { background: #aaa; cursor: not-allowed; }
-.btn-clear { padding: 10px 16px; background: white; color: #444; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; cursor: pointer; }
-.btn-clear:hover { border-color: #e94560; color: #e94560; }
-.btn-example { padding: 8px 14px; background: white; color: #555; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: 'Courier New', monospace; }
-.btn-example:hover { border-color: #e94560; color: #e94560; background: #fff0f3; }
-.btn-example.active { border-color: #e94560; color: #e94560; background: #fff0f3; font-weight: 700; }
-.divider { width: 1px; height: 28px; background: #ddd; margin: 0 4px; }
-
-.explanation { border-radius: 12px; border: 1px solid #ddd; overflow: hidden; margin-bottom: 16px; background: white; display: none; }
-.exp-header { padding: 11px 16px; background: #f8f9fa; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
-.exp-title { font-size: 14px; font-weight: 700; color: #222; }
-.lang-badge { margin-left: auto; font-size: 11px; padding: 3px 10px; border-radius: 20px; background: #e8f4fd; color: #1565c0; font-weight: 700; }
-
-.meta-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 12px 16px; border-bottom: 1px solid #eee; }
-@media(max-width:480px){ .meta-grid { grid-template-columns: 1fr 1fr; } }
-.meta-card { padding: 10px 12px; background: #f8f9fa; border-radius: 8px; }
-.meta-lbl { font-size: 10px; color: #888; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
-.meta-val { font-size: 13px; font-weight: 700; }
-.meta-val.red { color: #d32f2f; font-family: 'Courier New', monospace; }
-
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px; border-bottom: 1px solid #eee; }
-@media(max-width:480px){ .detail-grid { grid-template-columns: 1fr; } }
-.detail-card { padding: 12px; border-radius: 8px; }
-.detail-card.red { background: #fdecea; border: 1px solid #f5c6cb; }
-.detail-card.green { background: #e8f5e9; border: 1px solid #c8e6c9; }
-.detail-card.blue { background: #e3f2fd; border: 1px solid #bbdefb; }
-.dlbl { font-size: 10px; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
-.dlbl.red { color: #c62828; }
-.dlbl.green { color: #2e7d32; }
-.dlbl.blue { color: #1565c0; }
-.dtext { font-size: 13px; color: #333; line-height: 1.75; white-space: pre-line; }
-
-.remember-row { padding: 0 16px 14px; }
-
-.steps-section { display: none; margin-bottom: 16px; }
-.steps-lbl { font-size: 11px; color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
-.step-item { display: flex; gap: 10px; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; }
-.step-item.normal { background: #f8f9fa; border: 1px solid #eee; }
-.step-item.ok { background: #e8f5e9; border: 1px solid #c8e6c9; }
-.step-item.err { background: #fdecea; border: 1px solid #f5c6cb; }
-.step-num { font-size: 11px; color: #888; min-width: 16px; font-weight: 700; margin-top: 2px; }
-.step-text { font-size: 12px; font-family: 'Courier New', monospace; color: #333; line-height: 1.6; }
-
-.examples-section { border-top: 1px solid #eee; padding-top: 16px; margin-top: 4px; }
-.examples-lbl { font-size: 11px; color: #666; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
-.error-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 8px; }
-.error-card { padding: 10px 12px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; transition: all 0.15s; }
-.error-card:hover { border-color: #e94560; background: #fff0f3; }
-.etype { font-size: 12px; font-family: 'Courier New', monospace; color: #d32f2f; margin-bottom: 2px; font-weight: 700; }
-.edesc { font-size: 12px; color: #666; }
-
-.tip-box { background: #fff8e1; border: 1px solid #ffecb3; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #5d4037; line-height: 1.6; }
-.tip-box strong { color: #e65100; }
-
-.powered { text-align: center; padding: 20px; font-size: 12px; color: #aaa; }
-.powered a { color: #e94560; text-decoration: none; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;min-height:100vh}
+.header{background:#1a1a2e;color:white;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:50%;background:#e94560;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white}
+.header h1{font-size:18px;font-weight:700}
+.header p{font-size:12px;color:#aaa;margin-top:1px}
+.lang-select{padding:7px 12px;border-radius:8px;border:1px solid #444;background:#2a2a4e;color:white;font-size:13px;cursor:pointer}
+.container{max-width:1000px;margin:0 auto;padding:20px 16px}
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:7px;margin-bottom:16px}
+.lang-card{padding:7px 10px;border-radius:8px;border:1px solid #ddd;background:white;cursor:pointer;text-align:center;font-size:13px;transition:all 0.15s}
+.lang-card:hover{border-color:#e94560;color:#e94560}
+.lang-card.active{border:2px solid #e94560;background:#fff0f3;color:#e94560;font-weight:700}
+.status-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:8px 14px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;font-size:13px;color:#2e7d32}
+.status-bar.running{background:#fff8e1;border-color:#ffecb3;color:#f57c00}
+.status-bar.error{background:#fdecea;border-color:#f5c6cb;color:#c62828}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;flex-shrink:0}
+.status-dot.pulse{animation:pulse 1s infinite;background:#f57c00}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+/* Voice Bar */
+.voice-bar{display:none;align-items:center;gap:10px;margin-bottom:14px;padding:12px 16px;background:linear-gradient(135deg,#e3f2fd,#f3e5f5);border-radius:10px;border:1px solid #bbdefb;flex-wrap:wrap}
+.speak-btn{display:flex;align-items:center;gap:6px;padding:8px 18px;background:#1565c0;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:600;transition:all 0.2s}
+.speak-btn:hover{background:#0d47a1}
+.voice-label{font-size:13px;color:#1565c0;font-weight:500}
+.bhasini-badge{margin-left:auto;font-size:11px;padding:4px 10px;border-radius:20px;background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9;font-weight:600}
+/* API Config */
+.api-config{background:white;border-radius:10px;border:1px solid #ddd;padding:14px 16px;margin-bottom:14px;display:none}
+.api-config.visible{display:block}
+.api-config h3{font-size:14px;color:#222;margin-bottom:10px}
+.api-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+@media(max-width:540px){.api-row{grid-template-columns:1fr}}
+.api-input{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;width:100%}
+.api-input:focus{border-color:#1565c0}
+.api-save-btn{padding:8px 16px;background:#2e7d32;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;white-space:nowrap}
+/* Editor */
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:640px){.editor-grid{grid-template-columns:1fr}}
+.panel-label{font-size:11px;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
+textarea#code-input{width:100%;font-family:'Courier New',monospace;font-size:13px;padding:14px;border:1px solid #ddd;border-radius:10px;background:#1e1e2e;color:#cdd6f4;resize:vertical;min-height:220px;line-height:1.7;outline:none;transition:border 0.2s;tab-size:4}
+textarea#code-input:focus{border-color:#e94560}
+.output-box{min-height:220px;padding:14px;border:1px solid #ddd;border-radius:10px;background:#1e1e2e;font-family:'Courier New',monospace;font-size:13px;white-space:pre-wrap;overflow-y:auto;line-height:1.7;color:#6c7086}
+.output-box.has-output{color:#a6e3a1}
+.output-box.has-error{color:#f38ba8}
+.input-row{display:flex;gap:8px;margin-top:8px}
+.inline-input{flex:1;font-family:'Courier New',monospace;font-size:13px;padding:8px 12px;border:1px solid #e94560;border-radius:8px;background:#1e1e2e;color:#cdd6f4;outline:none;display:none}
+.inline-input.visible{display:block}
+.submit-input-btn{padding:8px 16px;background:#e94560;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;display:none}
+.submit-input-btn.visible{display:block}
+/* Buttons */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.btn-run{display:flex;align-items:center;gap:6px;padding:10px 22px;background:#e94560;color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:700;transition:background 0.2s}
+.btn-run:hover{background:#c73652}
+.btn-run:disabled{background:#aaa;cursor:not-allowed}
+.btn-clear{padding:10px 16px;background:white;color:#444;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-example{padding:8px 14px;background:white;color:#555;border:1px solid #ddd;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Courier New',monospace}
+.btn-example:hover{border-color:#e94560;color:#e94560;background:#fff0f3}
+.divider{width:1px;height:28px;background:#ddd;margin:0 4px}
+/* Explanation */
+.explanation{border-radius:12px;border:1px solid #ddd;overflow:hidden;margin-bottom:16px;background:white;display:none}
+.exp-header{padding:11px 16px;background:#f8f9fa;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
+.exp-title{font-size:14px;font-weight:700;color:#222}
+.lang-badge{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;background:#e8f4fd;color:#1565c0;font-weight:700}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 16px;border-bottom:1px solid #eee}
+@media(max-width:480px){.meta-grid{grid-template-columns:1fr 1fr}}
+.meta-card{padding:10px 12px;background:#f8f9fa;border-radius:8px}
+.meta-lbl{font-size:10px;color:#888;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
+.meta-val{font-size:13px;font-weight:700}
+.meta-val.red{color:#d32f2f;font-family:'Courier New',monospace}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px;border-bottom:1px solid #eee}
+@media(max-width:480px){.detail-grid{grid-template-columns:1fr}}
+.detail-card{padding:12px;border-radius:8px}
+.detail-card.red{background:#fdecea;border:1px solid #f5c6cb}
+.detail-card.green{background:#e8f5e9;border:1px solid #c8e6c9}
+.detail-card.blue{background:#e3f2fd;border:1px solid #bbdefb}
+.dlbl{font-size:10px;font-weight:800;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em}
+.dlbl.red{color:#c62828}
+.dlbl.green{color:#2e7d32}
+.dlbl.blue{color:#1565c0}
+.dtext{font-size:13px;color:#333;line-height:1.75;white-space:pre-line}
+.remember-row{padding:0 16px 14px}
+/* Steps */
+.steps-section{display:none;margin-bottom:16px}
+.steps-lbl{font-size:11px;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
+.step-item{display:flex;gap:10px;padding:8px 12px;border-radius:8px;margin-bottom:5px}
+.step-item.normal{background:#f8f9fa;border:1px solid #eee}
+.step-item.ok{background:#e8f5e9;border:1px solid #c8e6c9}
+.step-item.err{background:#fdecea;border:1px solid #f5c6cb}
+.step-num{font-size:11px;color:#888;min-width:16px;font-weight:700;margin-top:2px}
+.step-text{font-size:12px;font-family:'Courier New',monospace;color:#333;line-height:1.6}
+/* Error Cards */
+.examples-section{border-top:1px solid #eee;padding-top:16px;margin-top:4px}
+.examples-lbl{font-size:11px;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
+.error-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.error-card{padding:10px 12px;border-radius:8px;border:1px solid #ddd;background:white;cursor:pointer;transition:all 0.15s}
+.error-card:hover{border-color:#e94560;background:#fff0f3}
+.etype{font-size:12px;font-family:'Courier New',monospace;color:#d32f2f;margin-bottom:2px;font-weight:700}
+.edesc{font-size:12px;color:#666}
+.tip-box{background:#fff8e1;border:1px solid #ffecb3;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#5d4037;line-height:1.6}
+.tip-box strong{color:#e65100}
+.powered{text-align:center;padding:20px;font-size:12px;color:#aaa;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.powered a{color:#e94560;text-decoration:none}
+.powered button{font-size:11px;padding:4px 10px;border:1px solid #ddd;border-radius:6px;background:white;cursor:pointer;color:#555}
 </style>
 </head>
 <body>
@@ -136,11 +136,10 @@ textarea#code-input:focus { border-color: #e94560; }
 </div>
 
 <div class="container">
-
   <div class="lang-grid" id="lang-cards"></div>
 
   <div class="tip-box" id="tip-box">
-    💡 <strong>अब कोई भी Python code लिखो और चलाओ!</strong> Skulpt engine browser में ही Python run करता है — print, loops, functions, lists सब काम करेगा। नीचे examples भी देखो।
+    💡 <strong>कोई भी Python code लिखो और चलाओ!</strong> अब error की explanation अपनी भाषा में सुन भी सकते हो — 🔊 बटन दबाओ।
   </div>
 
   <div class="status-bar" id="status-bar">
@@ -148,14 +147,41 @@ textarea#code-input:focus { border-color: #e94560; }
     <span id="status-text">Python engine ready — कोई भी code लिखो और चलाओ</span>
   </div>
 
+  <!-- Bhasini API Config -->
+  <div class="api-config" id="api-config">
+    <h3>🔑 Bhasini API Key — बेहतर Voice के लिए</h3>
+    <div class="api-row">
+      <div>
+        <div class="meta-lbl">User ID</div>
+        <input class="api-input" id="bhasini-userid" placeholder="Bhasini User ID" />
+      </div>
+      <div>
+        <div class="meta-lbl">API Key</div>
+        <input class="api-input" id="bhasini-apikey" placeholder="Bhasini API Key" type="password" />
+      </div>
+      <button class="api-save-btn" onclick="saveBhasiniKey()">Save ✓</button>
+    </div>
+    <p style="font-size:12px;color:#888;margin-top:8px;">
+      Register free: <a href="https://dashboard.bhashini.co.in/user/register" target="_blank" style="color:#1565c0;">dashboard.bhashini.co.in</a>
+      &nbsp;|&nbsp; Without key: Web Speech API is used (works in Chrome)
+    </p>
+  </div>
+
+  <!-- Voice Bar (shown after error) -->
+  <div class="voice-bar" id="voice-bar">
+    <button class="speak-btn" id="speak-btn" onclick="toggleSpeak()">🔊 <span id="speak-btn-text">सुनो</span></button>
+    <span class="voice-label" id="voice-label">Error explanation सुनो — अपनी भाषा में</span>
+    <span class="bhasini-badge" id="bhasini-status">🎤 Web Speech</span>
+  </div>
+
   <div class="editor-grid">
     <div>
       <div class="panel-label" id="label-write">📝 अपना Code यहाँ लिखो</div>
-      <textarea id="code-input" spellcheck="false" placeholder="# यहाँ Python code लिखो&#10;# Example:&#10;name = 'Rahul'&#10;print('Namaste ' + name)"></textarea>
+      <textarea id="code-input" spellcheck="false" placeholder="# यहाँ Python code लिखो..."></textarea>
     </div>
     <div>
       <div class="panel-label" id="label-output">⚡ Output / गलती</div>
-      <div class="output-box waiting" id="output-box">Code चलाओ — यहाँ output दिखेगा...</div>
+      <div class="output-box" id="output-box">Code चलाओ — यहाँ output दिखेगा...</div>
       <div class="input-row">
         <input class="inline-input" id="inline-input" placeholder="यहाँ input टाइप करो..." />
         <button class="submit-input-btn" id="submit-input-btn" onclick="submitInput()">Enter ↵</button>
@@ -165,15 +191,15 @@ textarea#code-input:focus { border-color: #e94560; }
 
   <div class="btn-row">
     <button class="btn-run" id="btn-run" onclick="runCode()">▶ <span id="btn-run-text">Code चलाओ</span></button>
-    <button class="btn-clear" id="btn-clear" onclick="clearAll()">🗑 <span id="btn-clear-text">साफ करो</span></button>
+    <button class="btn-clear" onclick="clearAll()">🗑 <span id="btn-clear-text">साफ करो</span></button>
     <div class="divider"></div>
-    <button class="btn-example active" onclick="loadExample('hello')" id="ex-hello">Hello World</button>
-    <button class="btn-example" onclick="loadExample('loop')" id="ex-loop">Loop</button>
-    <button class="btn-example" onclick="loadExample('function')" id="ex-function">Function</button>
-    <button class="btn-example" onclick="loadExample('list')" id="ex-list">List</button>
-    <button class="btn-example" onclick="loadExample('input')" id="ex-input">Input</button>
+    <button class="btn-example" onclick="loadExample('hello')">Hello World</button>
+    <button class="btn-example" onclick="loadExample('loop')">Loop</button>
+    <button class="btn-example" onclick="loadExample('function')">Function</button>
+    <button class="btn-example" onclick="loadExample('list')">List</button>
+    <button class="btn-example" onclick="loadExample('input')">Input</button>
     <div class="divider"></div>
-    <button class="btn-example" onclick="loadExample('syntax')" id="ex-syntax" style="color:#d32f2f;border-color:#f5c6cb;">SyntaxError</button>
+    <button class="btn-example" onclick="loadExample('syntax')" style="color:#d32f2f;border-color:#f5c6cb;">SyntaxError</button>
     <button class="btn-example" onclick="loadExample('type')" style="color:#d32f2f;border-color:#f5c6cb;">TypeError</button>
     <button class="btn-example" onclick="loadExample('name')" style="color:#d32f2f;border-color:#f5c6cb;">NameError</button>
     <button class="btn-example" onclick="loadExample('zerodiv')" style="color:#d32f2f;border-color:#f5c6cb;">ZeroDivisionError</button>
@@ -186,39 +212,21 @@ textarea#code-input:focus { border-color: #e94560; }
       <span class="lang-badge" id="lang-badge">हिंदी</span>
     </div>
     <div class="meta-grid">
-      <div class="meta-card">
-        <div class="meta-lbl" id="label-errname">Error का नाम</div>
-        <div class="meta-val red" id="error-name"></div>
-      </div>
-      <div class="meta-card">
-        <div class="meta-lbl" id="label-line">Line नंबर</div>
-        <div class="meta-val" id="error-line"></div>
-      </div>
-      <div class="meta-card">
-        <div class="meta-lbl" id="label-level">गंभीरता</div>
-        <div class="meta-val" id="error-severity"></div>
-      </div>
+      <div class="meta-card"><div class="meta-lbl" id="label-errname">Error का नाम</div><div class="meta-val red" id="error-name"></div></div>
+      <div class="meta-card"><div class="meta-lbl" id="label-line">Line नंबर</div><div class="meta-val" id="error-line"></div></div>
+      <div class="meta-card"><div class="meta-lbl" id="label-level">गंभीरता</div><div class="meta-val" id="error-severity"></div></div>
     </div>
     <div class="detail-grid">
-      <div class="detail-card red">
-        <div class="dlbl red" id="label-what">❌ क्या हुआ</div>
-        <div class="dtext" id="what-happened"></div>
-      </div>
-      <div class="detail-card green">
-        <div class="dlbl green" id="label-fix">✅ ऐसे ठीक करो</div>
-        <div class="dtext" id="how-to-fix"></div>
-      </div>
+      <div class="detail-card red"><div class="dlbl red" id="label-what">❌ क्या हुआ</div><div class="dtext" id="what-happened"></div></div>
+      <div class="detail-card green"><div class="dlbl green" id="label-fix">✅ ऐसे ठीक करो</div><div class="dtext" id="how-to-fix"></div></div>
     </div>
     <div class="remember-row">
-      <div class="detail-card blue">
-        <div class="dlbl blue" id="label-remember">💡 याद रखो</div>
-        <div class="dtext" id="remember-this"></div>
-      </div>
+      <div class="detail-card blue"><div class="dlbl blue" id="label-remember">💡 याद रखो</div><div class="dtext" id="remember-this"></div></div>
     </div>
   </div>
 
   <div class="steps-section" id="steps-section">
-    <div class="steps-lbl" id="label-steps">Step by Step — Code कैसे चला</div>
+    <div class="steps-lbl" id="label-steps">Step by Step</div>
     <div id="steps-container"></div>
   </div>
 
@@ -226,377 +234,348 @@ textarea#code-input:focus { border-color: #e94560; }
     <div class="examples-lbl" id="label-examples">⚡ Error Examples — क्लिक करके सीखो</div>
     <div class="error-cards" id="error-cards"></div>
   </div>
-
 </div>
 
 <div class="powered">
-  Built with ❤️ for India &nbsp;|&nbsp;
-  <a href="https://github.com/Sks290176/bhasha-code" target="_blank">GitHub — Sks290176</a> &nbsp;|&nbsp;
-  Python by <a href="http://skulpt.org" target="_blank">Skulpt</a>
+  <span>Built with ❤️ for India</span>
+  <a href="https://github.com/Sks290176/bhasha-code" target="_blank">GitHub</a>
+  <span>Python by <a href="http://skulpt.org" target="_blank">Skulpt</a></span>
+  <button onclick="document.getElementById('api-config').classList.toggle('visible')">🔑 Bhasini API</button>
 </div>
 
 <script>
-// ─── Language Data ───────────────────────────────────────────────────────────
-const langs = {
-  hi:{name:"हिंदी",badge:"हिंदी",title:"Bhasha Code",subtitle:"Python सीखो — अपनी भाषा में",write:"📝 अपना Code यहाँ लिखो",output:"⚡ Output / गलती",run:"Code चलाओ",clear:"साफ करो",explain:"गलती क्यों हुई",errname:"Error का नाम",line:"Line नंबर",level:"गंभीरता",what:"❌ क्या हुआ",fix:"✅ ऐसे ठीक करो",remember:"💡 याद रखो",steps:"Step by Step — Code कैसे चला",examples:"⚡ Error Examples — क्लिक करके सीखो",placeholder:"# यहाँ कोई भी Python code लिखो\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — कोई भी code लिखो और चलाओ",running:"Code चल रहा है...",tip:"💡 <strong>अब कोई भी Python code लिखो और चलाओ!</strong> print, loops, functions, lists सब काम करेगा।",inputPrompt:"यहाँ input टाइप करो...",
-    errors:{
-      syntax:{what:"आपने if/def/for के बाद colon (:) लगाना भूल गए। Python में यह ज़रूरी है।",fix:"Line के अंत में colon (:) लगाओ।\nसही: if name == 'Rahul':",remember:"if, for, while, def के बाद हमेशा colon (:) लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},
-      type:{what:"String और number को + से directly नहीं जोड़ सकते।",fix:"str() use करो:\nmessage = 'उम्र: ' + str(age)\nया f-string: f'उम्र: {age}'",remember:"Number को text के साथ जोड़ना हो तो str() लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},
-      name:{what:"Variable use करने से पहले define नहीं किया।",fix:"Variable पहले define करो:\nstudent_name = 'Priya'\nprint(student_name)",remember:"Python ऊपर से नीचे चलती है। Variable पहले define करो।",line:"Line 2",sev:"🟡 ध्यान दो"},
-      index:{what:"List में उतने items नहीं हैं जितना index माँगा।",fix:"fruits[2] लिखो (0 से शुरू)\nया fruits[-1] आखिरी item के लिए",remember:"List का index 0 से शुरू होता है।",line:"Line 4",sev:"🟡 ध्यान दो"},
-      zerodiv:{what:"किसी भी number को 0 से divide नहीं कर सकते।",fix:"if b != 0:\n    result = a / b\nelse:\n    print('0 से divide नहीं हो सकता')",remember:"Divide करने से पहले check करो divisor 0 तो नहीं।",line:"Line 4",sev:"🔴 ज़रूरी ठीक करो"}
-    }
-  },
-  te:{name:"తెలుగు",badge:"తెలుగు",title:"Bhasha Code",subtitle:"Python నేర్చుకో — నీ భాషలో",write:"📝 నీ Code ఇక్కడ రాయి",output:"⚡ Output / తప్పు",run:"Code నడపండి",clear:"తుడిచివేయండి",explain:"తప్పు ఎందుకు జరిగింది",errname:"Error పేరు",line:"Line నంబర్",level:"తీవ్రత",what:"❌ ఏం జరిగింది",fix:"✅ ఇలా సరిచేయండి",remember:"💡 గుర్తుంచుకోండి",steps:"Step by Step",examples:"⚡ Error Examples",placeholder:"# ఏదైనా Python code రాయండి\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — ఏదైనా code రాయండి",running:"Code నడుస్తోంది...",tip:"💡 <strong>ఇప్పుడు ఏదైనా Python code రాసి నడపండి!</strong> print, loops, functions అన్నీ పని చేస్తాయి।",inputPrompt:"ఇక్కడ input టైప్ చేయండి...",
-    errors:{
-      syntax:{what:"if/def/for తర్వాత colon (:) పెట్టడం మర్చిపోయారు.",fix:"సరైనది: if name == 'Rahul':",remember:"if, for, while, def తర్వాత ఎప్పుడూ colon (:) పెట్టండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},
-      type:{what:"String మరియు number ని + తో నేరుగా కలపలేరు.",fix:"str() వాడండి:\nmessage = 'వయసు: ' + str(age)",remember:"Number ని text తో కలపాలంటే str() వాడండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},
-      name:{what:"Variable define చేయకముందే use చేశారు.",fix:"ముందు:\nstudent_name = 'Priya'",remember:"Python పైన నుండి కిందకు నడుస్తుంది.",line:"Line 2",sev:"🟡 జాగ్రత్తగా చూడండి"},
-      index:{what:"List లో అంత items లేవు.",fix:"fruits[2] లేదా fruits[-1]",remember:"List index 0 నుండి మొదలవుతుంది.",line:"Line 4",sev:"🟡 జాగ్రత్తగా చూడండి"},
-      zerodiv:{what:"ఏ number నైనా 0 తో divide చేయలేరు.",fix:"if b != 0:\n    result = a / b",remember:"Divide చేయడానికి ముందు check చేయండి.",line:"Line 4",sev:"🔴 తప్పక సరిచేయండి"}
-    }
-  },
-  ta:{name:"தமிழ்",badge:"தமிழ்",title:"Bhasha Code",subtitle:"Python கற்றுக்கொள் — உன் மொழியில்",write:"📝 உன் Code இங்கே எழுது",output:"⚡ Output / பிழை",run:"Code இயக்கு",clear:"அழி",explain:"பிழை ஏன் வந்தது",errname:"பிழை பெயர்",line:"வரி எண்",level:"தீவிரம்",what:"❌ என்ன ஆனது",fix:"✅ இப்படி சரிசெய்",remember:"💡 நினைவில் வை",steps:"படி படியாக",examples:"⚡ பொதுவான பிழைகள்",placeholder:"# எந்த Python code ம் எழுதலாம்\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — எந்த code ம் எழுதி இயக்கலாம்",running:"Code இயங்குகிறது...",tip:"💡 <strong>இப்போது எந்த Python code ம் எழுதி இயக்கலாம்!</strong> print, loops, functions எல்லாம் வேலை செய்யும்।",inputPrompt:"இங்கே input தட்டச்சு செய்யுங்கள்...",
-    errors:{
-      syntax:{what:"if/def/for க்கு பிறகு colon (:) போட மறந்துவிட்டீர்கள்.",fix:"சரியானது: if name == 'Rahul':",remember:"if, for, while, def க்கு பிறகு எப்போதும் colon (:) போடுங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},
-      type:{what:"String மற்றும் number ஐ + மூலம் நேரடியாக இணைக்க முடியாது.",fix:"str() பயன்படுத்துங்கள்:\nmessage = 'வயது: ' + str(age)",remember:"Number ஐ text உடன் இணைக்க str() பயன்படுத்துங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},
-      name:{what:"Variable ஐ define செய்யாமல் பயன்படுத்தினீர்கள்.",fix:"முதலில்:\nstudent_name = 'Priya'",remember:"Python மேலிருந்து கீழே இயங்கும்.",line:"வரி 2",sev:"🟡 கவனமாக பாருங்கள்"},
-      index:{what:"List ல் அவ்வளவு items இல்லை.",fix:"fruits[2] அல்லது fruits[-1]",remember:"List index 0 இல் இருந்து தொடங்கும்.",line:"வரி 4",sev:"🟡 கவனமாக பாருங்கள்"},
-      zerodiv:{what:"எந்த எண்ணையும் 0 ஆல் வகுக்க முடியாது.",fix:"if b != 0:\n    result = a / b",remember:"வகுக்கும் முன் சரிபார்க்கவும்.",line:"வரி 4",sev:"🔴 கட்டாயம் சரிசெய்"}
-    }
-  },
-  kn:{name:"ಕನ್ನಡ",badge:"ಕನ್ನಡ",title:"Bhasha Code",subtitle:"Python ಕಲಿ — ನಿನ್ನ ಭಾಷೆಯಲ್ಲಿ",write:"📝 ನಿನ್ನ Code ಇಲ್ಲಿ ಬರೆ",output:"⚡ Output / ತಪ್ಪು",run:"Code ಚಲಾಯಿಸಿ",clear:"ಅಳಿಸಿ",explain:"ತಪ್ಪು ಏಕೆ ಆಯಿತು",errname:"Error ಹೆಸರು",line:"Line ಸಂಖ್ಯೆ",level:"ತೀವ್ರತೆ",what:"❌ ಏನಾಯಿತು",fix:"✅ ಹೀಗೆ ಸರಿಪಡಿಸಿ",remember:"💡 ನೆನಪಿಡಿ",steps:"ಹಂತ ಹಂತವಾಗಿ",examples:"⚡ Common Errors",placeholder:"# ಯಾವುದೇ Python code ಬರೆಯಿರಿ\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — ಯಾವುದೇ code ಬರೆದು ಚಲಾಯಿಸಿ",running:"Code ಚಲಿಸುತ್ತಿದೆ...",tip:"💡 <strong>ಈಗ ಯಾವುದೇ Python code ಬರೆದು ಚಲಾಯಿಸಿ!</strong> print, loops, functions ಎಲ್ಲವೂ ಕೆಲಸ ಮಾಡುತ್ತದೆ.",inputPrompt:"ಇಲ್ಲಿ input ಟೈಪ್ ಮಾಡಿ...",
-    errors:{
-      syntax:{what:"if/def/for ನಂತರ colon (:) ಹಾಕಲು ಮರೆತಿದ್ದೀರಿ.",fix:"ಸರಿಯಾದದ್ದು: if name == 'Rahul':",remember:"if, for, while, def ನಂತರ ಯಾವಾಗಲೂ colon (:) ಹಾಕಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},
-      type:{what:"String ಮತ್ತು number ಅನ್ನು + ಮೂಲಕ ನೇರವಾಗಿ ಜೋಡಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"str() ಬಳಸಿ:\nmessage = 'ವಯಸ್ಸು: ' + str(age)",remember:"Number ಅನ್ನು text ಜೊತೆ ಸೇರಿಸಲು str() ಬಳಸಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},
-      name:{what:"Variable define ಮಾಡದೆ ಬಳಸಿದ್ದೀರಿ.",fix:"ಮೊದಲು:\nstudent_name = 'Priya'",remember:"Python ಮೇಲಿನಿಂದ ಕೆಳಕ್ಕೆ ಚಲಿಸುತ್ತದೆ.",line:"ಸಾಲು 3",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},
-      index:{what:"List ನಲ್ಲಿ ಅಷ್ಟು items ಇಲ್ಲ.",fix:"fruits[2] ಅಥವಾ fruits[-1]",remember:"List index 0 ರಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.",line:"ಸಾಲು 4",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},
-      zerodiv:{what:"ಯಾವ ಸಂಖ್ಯೆಯನ್ನೂ 0 ರಿಂದ ಭಾಗಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"if b != 0:\n    result = a / b",remember:"ಭಾಗಿಸುವ ಮೊದಲು ಖಚಿತಪಡಿಸಿ.",line:"ಸಾಲು 4",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"}
-    }
-  },
-  bn:{name:"বাংলা",badge:"বাংলা",title:"Bhasha Code",subtitle:"Python শেখো — তোমার ভাষায়",write:"📝 তোমার Code এখানে লেখো",output:"⚡ Output / ভুল",run:"Code চালাও",clear:"মুছে ফেলো",explain:"ভুল কেন হলো",errname:"Error এর নাম",line:"Line নম্বর",level:"গুরুত্ব",what:"❌ কী হয়েছে",fix:"✅ এভাবে ঠিক করো",remember:"💡 মনে রেখো",steps:"ধাপে ধাপে",examples:"⚡ Common Errors",placeholder:"# যেকোনো Python code লেখো\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — যেকোনো code লিখে চালাও",running:"Code চলছে...",tip:"💡 <strong>এখন যেকোনো Python code লিখে চালাও!</strong> print, loops, functions সব কাজ করবে।",inputPrompt:"এখানে input টাইপ করো...",
-    errors:{
-      syntax:{what:"if/def/for এর পরে colon (:) দিতে ভুলে গেছ।",fix:"সঠিক: if name == 'Rahul':",remember:"if, for, while, def এর পরে সবসময় colon (:) দাও।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},
-      type:{what:"String এবং number কে + দিয়ে সরাসরি যোগ করা যায় না।",fix:"str() ব্যবহার করো:\nmessage = 'বয়স: ' + str(age)",remember:"Number কে text এর সাথে যোগ করতে str() ব্যবহার করো।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},
-      name:{what:"Variable define করার আগেই ব্যবহার করেছ।",fix:"আগে:\nstudent_name = 'Priya'",remember:"Python উপর থেকে নিচে চলে।",line:"Line 2",sev:"🟡 মনোযোগ দাও"},
-      index:{what:"List এ ততগুলো items নেই।",fix:"fruits[2] বা fruits[-1]",remember:"List এর index 0 থেকে শুরু।",line:"Line 4",sev:"🟡 মনোযোগ দাও"},
-      zerodiv:{what:"কোনো সংখ্যাকে 0 দিয়ে ভাগ করা যায় না।",fix:"if b != 0:\n    result = a / b",remember:"ভাগ করার আগে check করো।",line:"Line 4",sev:"🔴 অবশ্যই ঠিক করো"}
-    }
-  },
-  mr:{name:"मराठी",badge:"मराठी",title:"Bhasha Code",subtitle:"Python शिका — तुमच्या भाषेत",write:"📝 तुमचा Code इथे लिहा",output:"⚡ Output / चूक",run:"Code चालवा",clear:"साफ करा",explain:"चूक का झाली",errname:"Error चे नाव",line:"Line नंबर",level:"गांभीर्य",what:"❌ काय झाले",fix:"✅ असे दुरुस्त करा",remember:"💡 लक्षात ठेवा",steps:"एक एक पाऊल",examples:"⚡ Common Errors",placeholder:"# कोणताही Python code लिहा\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — कोणताही code लिहा आणि चालवा",running:"Code चालू आहे...",tip:"💡 <strong>आता कोणताही Python code लिहा आणि चालवा!</strong> print, loops, functions सगळं काम करेल.",inputPrompt:"इथे input टाइप करा...",
-    errors:{
-      syntax:{what:"if/def/for नंतर colon (:) टाकायला विसरलात.",fix:"बरोबर: if name == 'Rahul':",remember:"if, for, while, def नंतर नेहमी colon (:) टाका.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},
-      type:{what:"String आणि number ला + ने थेट जोडता येत नाही.",fix:"str() वापरा:\nmessage = 'वय: ' + str(age)",remember:"Number ला text सोबत जोडायचे असल्यास str() वापरा.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},
-      name:{what:"Variable define करण्यापूर्वीच वापरलात.",fix:"आधी:\nstudent_name = 'Priya'",remember:"Python वरून खाली चालते.",line:"Line 2",sev:"🟡 लक्ष द्या"},
-      index:{what:"List मध्ये तेवढे items नाहीत.",fix:"fruits[2] किंवा fruits[-1]",remember:"List चा index 0 पासून सुरू होतो.",line:"Line 4",sev:"🟡 लक्ष द्या"},
-      zerodiv:{what:"कोणत्याही संख्येला 0 ने भागता येत नाही.",fix:"if b != 0:\n    result = a / b",remember:"भागाकार करण्यापूर्वी तपासा.",line:"Line 4",sev:"🔴 नक्की दुरुस्त करा"}
-    }
-  },
-  gu:{name:"ગુજરાતી",badge:"ગુજરાતી",title:"Bhasha Code",subtitle:"Python શીખો — તમારી ભાષામાં",write:"📝 તમારો Code અહીં લખો",output:"⚡ Output / ભૂલ",run:"Code ચલાવો",clear:"સાફ કરો",explain:"ભૂલ કેમ થઈ",errname:"Error નું નામ",line:"Line નંબર",level:"ગંભીરતા",what:"❌ શું થયું",fix:"✅ આ રીતે સુધારો",remember:"💡 યાદ રાખો",steps:"એક એક પગલું",examples:"⚡ Common Errors",placeholder:"# કોઈ પણ Python code લખો\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — કોઈ પણ code લખો અને ચલાવો",running:"Code ચાલી રહ્યો છે...",tip:"💡 <strong>હવે કોઈ પણ Python code લખો અને ચલાવો!</strong> print, loops, functions બધું કામ કરશે.",inputPrompt:"અહીં input ટાઇપ કરો...",
-    errors:{
-      syntax:{what:"if/def/for પછી colon (:) મૂકવાનું ભૂલી ગયા.",fix:"સાચું: if name == 'Rahul':",remember:"if, for, while, def પછી હંમેશા colon (:) મૂકો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},
-      type:{what:"String અને number ને + વડે સીધા જોડી ન શકાય.",fix:"str() વાપરો:\nmessage = 'ઉંમર: ' + str(age)",remember:"Number ને text સાથે જોડવા str() વાપરો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},
-      name:{what:"Variable define કર્યા વગર વાપર્યો.",fix:"પહેલા:\nstudent_name = 'Priya'",remember:"Python ઉપરથી નીચે ચાલે.",line:"Line 2",sev:"🟡 ધ્યાન આપો"},
-      index:{what:"List માં એટલા items નથી.",fix:"fruits[2] અથવા fruits[-1]",remember:"List નો index 0 થી શરૂ થાય.",line:"Line 4",sev:"🟡 ધ્યાન આપો"},
-      zerodiv:{what:"કોઈ પણ number ને 0 વડે ભાગ ન આપી શકાય.",fix:"if b != 0:\n    result = a / b",remember:"ભાગ આપતા પહેલા ચકાસો.",line:"Line 4",sev:"🔴 જરૂર સુધારો"}
-    }
-  },
-  pa:{name:"ਪੰਜਾਬੀ",badge:"ਪੰਜਾਬੀ",title:"Bhasha Code",subtitle:"Python ਸਿੱਖੋ — ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ",write:"📝 ਆਪਣਾ Code ਇੱਥੇ ਲਿਖੋ",output:"⚡ Output / ਗਲਤੀ",run:"Code ਚਲਾਓ",clear:"ਸਾਫ਼ ਕਰੋ",explain:"ਗਲਤੀ ਕਿਉਂ ਹੋਈ",errname:"Error ਦਾ ਨਾਮ",line:"Line ਨੰਬਰ",level:"ਗੰਭੀਰਤਾ",what:"❌ ਕੀ ਹੋਇਆ",fix:"✅ ਇਸ ਤਰ੍ਹਾਂ ਠੀਕ ਕਰੋ",remember:"💡 ਯਾਦ ਰੱਖੋ",steps:"ਕਦਮ ਦਰ ਕਦਮ",examples:"⚡ Common Errors",placeholder:"# ਕੋਈ ਵੀ Python code ਲਿਖੋ\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — ਕੋਈ ਵੀ code ਲਿਖੋ ਅਤੇ ਚਲਾਓ",running:"Code ਚੱਲ ਰਿਹਾ ਹੈ...",tip:"💡 <strong>ਹੁਣ ਕੋਈ ਵੀ Python code ਲਿਖੋ ਅਤੇ ਚਲਾਓ!</strong> print, loops, functions ਸਭ ਕੰਮ ਕਰੇਗਾ।",inputPrompt:"ਇੱਥੇ input ਟਾਈਪ ਕਰੋ...",
-    errors:{
-      syntax:{what:"if/def/for ਤੋਂ ਬਾਅਦ colon (:) ਲਗਾਉਣਾ ਭੁੱਲ ਗਏ।",fix:"ਸਹੀ: if name == 'Rahul':",remember:"if, for, while, def ਤੋਂ ਬਾਅਦ ਹਮੇਸ਼ਾ colon (:) ਲਗਾਓ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},
-      type:{what:"String ਅਤੇ number ਨੂੰ + ਨਾਲ ਸਿੱਧਾ ਜੋੜ ਨਹੀਂ ਸਕਦੇ।",fix:"str() ਵਰਤੋ:\nmessage = 'ਉਮਰ: ' + str(age)",remember:"Number ਨੂੰ text ਨਾਲ ਜੋੜਨ ਲਈ str() ਵਰਤੋ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},
-      name:{what:"Variable define ਕੀਤੇ ਬਿਨਾਂ ਵਰਤਿਆ।",fix:"ਪਹਿਲਾਂ:\nstudent_name = 'Priya'",remember:"Python ਉੱਪਰ ਤੋਂ ਹੇਠਾਂ ਚੱਲਦੀ ਹੈ।",line:"Line 2",sev:"🟡 ਧਿਆਨ ਦਿਓ"},
-      index:{what:"List ਵਿੱਚ ਉਨੇ items ਨਹੀਂ ਹਨ।",fix:"fruits[2] ਜਾਂ fruits[-1]",remember:"List ਦਾ index 0 ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦਾ ਹੈ।",line:"Line 4",sev:"🟡 ਧਿਆਨ ਦਿਓ"},
-      zerodiv:{what:"ਕਿਸੇ ਵੀ number ਨੂੰ 0 ਨਾਲ ਭਾਗ ਨਹੀਂ ਦੇ ਸਕਦੇ।",fix:"if b != 0:\n    result = a / b",remember:"ਭਾਗ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚ ਕਰੋ।",line:"Line 4",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"}
-    }
-  },
-  ml:{name:"മലയാളം",badge:"മലയാളം",title:"Bhasha Code",subtitle:"Python പഠിക്കൂ — നിന്റെ ഭാഷയിൽ",write:"📝 നിന്റെ Code ഇവിടെ എഴുതൂ",output:"⚡ Output / തെറ്റ്",run:"Code ഓടിക്കൂ",clear:"മായ്ക്കൂ",explain:"തെറ്റ് എന്തുകൊണ്ട്",errname:"Error പേര്",line:"Line നമ്പർ",level:"ഗൗരവം",what:"❌ എന്ത് സംഭവിച്ചു",fix:"✅ ഇങ്ങനെ ശരിയാക്കൂ",remember:"💡 ഓർക്കൂ",steps:"പടി പടിയായി",examples:"⚡ Common Errors",placeholder:"# ഏത് Python code ഉം എഴുതൂ\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — ഏത് code ഉം എഴുതി ഓടിക്കൂ",running:"Code ഓടുന്നു...",tip:"💡 <strong>ഇപ്പോൾ ഏത് Python code ഉം എഴുതി ഓടിക്കൂ!</strong> print, loops, functions എല്ലാം പ്രവർത്തിക്കും.",inputPrompt:"ഇവിടെ input ടൈപ്പ് ചെയ്യൂ...",
-    errors:{
-      syntax:{what:"if/def/for ന് ശേഷം colon (:) ഇടാൻ മറന്നു.",fix:"ശരി: if name == 'Rahul':",remember:"if, for, while, def ന് ശേഷം എപ്പോഴും colon (:) ഇടൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},
-      type:{what:"String ഉം number ഉം + ഉപയോഗിച്ച് നേരിട്ട് കൂട്ടാൻ പറ്റില്ല.",fix:"str() ഉപയോഗിക്കൂ:\nmessage = 'പ്രായം: ' + str(age)",remember:"Number നെ text ൽ ചേർക്കാൻ str() ഉപയോഗിക്കൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},
-      name:{what:"Variable define ചെയ്യാതെ ഉപയോഗിച്ചു.",fix:"ആദ്യം:\nstudent_name = 'Priya'",remember:"Python മുകളിൽ നിന്ന് താഴേക്ക് ഓടുന്നു.",line:"Line 2",sev:"🟡 ശ്രദ്ധിക്കൂ"},
-      index:{what:"List ൽ അത്രയും items ഇല്ല.",fix:"fruits[2] അല്ലെങ്കിൽ fruits[-1]",remember:"List index 0 മുതൽ തുടങ്ങുന്നു.",line:"Line 4",sev:"🟡 ശ്രദ്ധിക്കൂ"},
-      zerodiv:{what:"ഒരു സംഖ്യയെ 0 കൊണ്ട് ഹരിക്കാൻ പറ്റില്ല.",fix:"if b != 0:\n    result = a / b",remember:"ഹരിക്കുന്നതിന് മുൻപ് ഉറപ്പാക്കൂ.",line:"Line 4",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"}
-    }
-  },
-  or:{name:"ଓଡ଼ିଆ",badge:"ଓଡ଼ିଆ",title:"Bhasha Code",subtitle:"Python ଶିଖ — ନିଜ ଭାଷାରେ",write:"📝 ତୁମର Code ଏଠାରେ ଲେଖ",output:"⚡ Output / ଭୁଲ",run:"Code ଚଲାଅ",clear:"ସଫା କର",explain:"ଭୁଲ କାହିଁକି ହେଲା",errname:"Error ର ନାମ",line:"Line ନମ୍ବର",level:"ଗୁରୁତ୍ୱ",what:"❌ କ'ଣ ହେଲା",fix:"✅ ଏହିପରି ଠିକ୍ କର",remember:"💡 ମନେ ରଖ",steps:"ପଦକ୍ରମେ",examples:"⚡ Common Errors",placeholder:"# ଯେକୌଣସି Python code ଲେଖ\nname = 'Rahul'\nprint('Namaste ' + name)",ready:"Python engine ready — ଯେକୌଣସି code ଲେଖ ଓ ଚଲାଅ",running:"Code ଚାଲୁ ଅଛି...",tip:"💡 <strong>ଏବେ ଯେକୌଣସି Python code ଲେଖ ଓ ଚଲାଅ!</strong> print, loops, functions ସବୁ କାମ କରିବ।",inputPrompt:"ଏଠାରେ input ଟାଇପ୍ କର...",
-    errors:{
-      syntax:{what:"if/def/for ପରେ colon (:) ଲଗାଇବା ଭୁଲି ଗଲ।",fix:"ଠିକ୍: if name == 'Rahul':",remember:"if, for, while, def ପରେ ସବୁବେଳେ colon (:) ଲଗାଅ।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},
-      type:{what:"String ଓ number କୁ + ରେ ସିଧା ଯୋଡ଼ି ହୁଏ ନାହିଁ।",fix:"str() ବ୍ୟବହାର କର:\nmessage = 'ବୟସ: ' + str(age)",remember:"Number କୁ text ସହ ଯୋଡ଼ିବାକୁ str() ବ୍ୟବହାର କର।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},
-      name:{what:"Variable define ନ କରି ବ୍ୟବହାର କଲ।",fix:"ଆଗରୁ:\nstudent_name = 'Priya'",remember:"Python ଉପରୁ ତଳକୁ ଚଲେ।",line:"Line 2",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},
-      index:{what:"List ରେ ସେତିକି items ନାହାଁନ୍ତି।",fix:"fruits[2] ବା fruits[-1]",remember:"List ର index 0 ରୁ ଆରମ୍ଭ ହୁଏ।",line:"Line 4",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},
-      zerodiv:{what:"କୌଣସି ସଂଖ୍ୟାକୁ 0 ରେ ଭାଗ କରି ହୁଏ ନାହିଁ।",fix:"if b != 0:\n    result = a / b",remember:"ଭାଗ କରିବା ଆଗରୁ ଯାଞ୍ଚ କର।",line:"Line 4",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"}
-    }
+// ─── Language Data ─────────────────────────────────────────────────────
+const langs={hi:{name:"हिंदी",badge:"हिंदी",title:"Bhasha Code",subtitle:"Python सीखो — अपनी भाषा में",write:"📝 अपना Code यहाँ लिखो",output:"⚡ Output / गलती",run:"Code चलाओ",clear:"साफ करो",explain:"गलती क्यों हुई",errname:"Error का नाम",line:"Line नंबर",level:"गंभीरता",what:"❌ क्या हुआ",fix:"✅ ऐसे ठीक करो",remember:"💡 याद रखो",steps:"Step by Step",examples:"⚡ Error Examples — क्लिक करके सीखो",speak:"सुनो",stop:"रोको",voiceLabel:"Error explanation सुनो",ready:"Python engine ready — कोई भी code लिखो",running:"Code चल रहा है...",tip:"💡 <strong>कोई भी Python code लिखो और चलाओ!</strong> Error की explanation अब 🔊 बटन से सुनो।",inputPrompt:"यहाँ input टाइप करो...",
+errors:{syntax:{what:"आपने if/def/for के बाद colon (:) लगाना भूल गए। Python में यह ज़रूरी है।",fix:"Line के अंत में colon (:) लगाओ।\nसही: if name == 'Rahul':",remember:"if, for, while, def के बाद हमेशा colon (:) लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},type:{what:"String और number को + से directly नहीं जोड़ सकते।",fix:"str() use करो:\nmessage = 'उम्र: ' + str(age)\nया f-string: f'उम्र: {age}'",remember:"Number को text के साथ जोड़ना हो तो str() लगाओ।",line:"Line 3",sev:"🔴 ज़रूरी ठीक करो"},name:{what:"Variable use करने से पहले define नहीं किया।",fix:"Variable पहले define करो:\nstudent_name = 'Priya'\nprint(student_name)",remember:"Python ऊपर से नीचे चलती है। Variable पहले define करो।",line:"Line 2",sev:"🟡 ध्यान दो"},index:{what:"List में उतने items नहीं हैं जितना index माँगा।",fix:"fruits[2] लिखो (0 से शुरू)\nया fruits[-1] आखिरी item के लिए",remember:"List का index 0 से शुरू होता है।",line:"Line 4",sev:"🟡 ध्यान दो"},zerodiv:{what:"किसी भी number को 0 से divide नहीं कर सकते।",fix:"if b != 0:\n    result = a / b\nelse:\n    print('0 से divide नहीं हो सकता')",remember:"Divide करने से पहले check करो divisor 0 तो नहीं।",line:"Line 4",sev:"🔴 ज़रूरी ठीक करो"}}},
+te:{name:"తెలుగు",badge:"తెలుగు",title:"Bhasha Code",subtitle:"Python నేర్చుకో — నీ భాషలో",write:"📝 నీ Code ఇక్కడ రాయి",output:"⚡ Output / తప్పు",run:"Code నడపండి",clear:"తుడిచివేయండి",explain:"తప్పు ఎందుకు జరిగింది",errname:"Error పేరు",line:"Line నంబర్",level:"తీవ్రత",what:"❌ ఏం జరిగింది",fix:"✅ ఇలా సరిచేయండి",remember:"💡 గుర్తుంచుకోండి",steps:"Step by Step",examples:"⚡ Error Examples",speak:"వినండి",stop:"ఆపండి",voiceLabel:"Error explanation వినండి",ready:"Python engine ready",running:"Code నడుస్తోంది...",tip:"💡 <strong>ఏదైనా Python code రాసి నడపండి!</strong> Error వివరణ 🔊 తో వినండి.",inputPrompt:"ఇక్కడ input టైప్ చేయండి...",
+errors:{syntax:{what:"if/def/for తర్వాత colon (:) పెట్టడం మర్చిపోయారు.",fix:"సరైనది: if name == 'Rahul':",remember:"if, for, while, def తర్వాత ఎప్పుడూ colon (:) పెట్టండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},type:{what:"String మరియు number ని + తో నేరుగా కలపలేరు.",fix:"str() వాడండి:\nmessage = 'వయసు: ' + str(age)",remember:"Number ని text తో కలపాలంటే str() వాడండి.",line:"Line 3",sev:"🔴 తప్పక సరిచేయండి"},name:{what:"Variable define చేయకముందే use చేశారు.",fix:"ముందు:\nstudent_name = 'Priya'",remember:"Python పైన నుండి కిందకు నడుస్తుంది.",line:"Line 2",sev:"🟡 జాగ్రత్తగా చూడండి"},index:{what:"List లో అంత items లేవు.",fix:"fruits[2] లేదా fruits[-1]",remember:"List index 0 నుండి మొదలవుతుంది.",line:"Line 4",sev:"🟡 జాగ్రత్తగా చూడండి"},zerodiv:{what:"ఏ number నైనా 0 తో divide చేయలేరు.",fix:"if b != 0:\n    result = a / b",remember:"Divide చేయడానికి ముందు check చేయండి.",line:"Line 4",sev:"🔴 తప్పక సరిచేయండి"}}},
+ta:{name:"தமிழ்",badge:"தமிழ்",title:"Bhasha Code",subtitle:"Python கற்றுக்கொள் — உன் மொழியில்",write:"📝 உன் Code இங்கே எழுது",output:"⚡ Output / பிழை",run:"Code இயக்கு",clear:"அழி",explain:"பிழை ஏன் வந்தது",errname:"பிழை பெயர்",line:"வரி எண்",level:"தீவிரம்",what:"❌ என்ன ஆனது",fix:"✅ இப்படி சரிசெய்",remember:"💡 நினைவில் வை",steps:"படி படியாக",examples:"⚡ பொதுவான பிழைகள்",speak:"கேளுங்கள்",stop:"நிறுத்துங்கள்",voiceLabel:"பிழை விளக்கம் கேளுங்கள்",ready:"Python engine ready",running:"Code இயங்குகிறது...",tip:"💡 <strong>எந்த Python code ம் எழுதி இயக்கலாம்!</strong> பிழை விளக்கம் 🔊 கேளுங்கள்.",inputPrompt:"இங்கே input தட்டச்சு செய்யுங்கள்...",
+errors:{syntax:{what:"if/def/for க்கு பிறகு colon (:) போட மறந்துவிட்டீர்கள்.",fix:"சரியானது: if name == 'Rahul':",remember:"if, for, while, def க்கு பிறகு எப்போதும் colon (:) போடுங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},type:{what:"String மற்றும் number ஐ + மூலம் நேரடியாக இணைக்க முடியாது.",fix:"str() பயன்படுத்துங்கள்:\nmessage = 'வயது: ' + str(age)",remember:"Number ஐ text உடன் இணைக்க str() பயன்படுத்துங்கள்.",line:"வரி 3",sev:"🔴 கட்டாயம் சரிசெய்"},name:{what:"Variable ஐ define செய்யாமல் பயன்படுத்தினீர்கள்.",fix:"முதலில்:\nstudent_name = 'Priya'",remember:"Python மேலிருந்து கீழே இயங்கும்.",line:"வரி 2",sev:"🟡 கவனமாக பாருங்கள்"},index:{what:"List ல் அவ்வளவு items இல்லை.",fix:"fruits[2] அல்லது fruits[-1]",remember:"List index 0 இல் இருந்து தொடங்கும்.",line:"வரி 4",sev:"🟡 கவனமாக பாருங்கள்"},zerodiv:{what:"எந்த எண்ணையும் 0 ஆல் வகுக்க முடியாது.",fix:"if b != 0:\n    result = a / b",remember:"வகுக்கும் முன் சரிபார்க்கவும்.",line:"வரி 4",sev:"🔴 கட்டாயம் சரிசெய்"}}},
+kn:{name:"ಕನ್ನಡ",badge:"ಕನ್ನಡ",title:"Bhasha Code",subtitle:"Python ಕಲಿ — ನಿನ್ನ ಭಾಷೆಯಲ್ಲಿ",write:"📝 ನಿನ್ನ Code ಇಲ್ಲಿ ಬರೆ",output:"⚡ Output / ತಪ್ಪು",run:"Code ಚಲಾಯಿಸಿ",clear:"ಅಳಿಸಿ",explain:"ತಪ್ಪು ಏಕೆ ಆಯಿತು",errname:"Error ಹೆಸರು",line:"Line ಸಂಖ್ಯೆ",level:"ತೀವ್ರತೆ",what:"❌ ಏನಾಯಿತು",fix:"✅ ಹೀಗೆ ಸರಿಪಡಿಸಿ",remember:"💡 ನೆನಪಿಡಿ",steps:"ಹಂತ ಹಂತವಾಗಿ",examples:"⚡ Common Errors",speak:"ಕೇಳಿ",stop:"ನಿಲ್ಲಿಸಿ",voiceLabel:"Error ವಿವರಣೆ ಕೇಳಿ",ready:"Python engine ready",running:"Code ಚಲಿಸುತ್ತಿದೆ...",tip:"💡 <strong>ಯಾವುದೇ Python code ಬರೆದು ಚಲಾಯಿಸಿ!</strong> Error ವಿವರಣೆ 🔊 ಕೇಳಿ.",inputPrompt:"ಇಲ್ಲಿ input ಟೈಪ್ ಮಾಡಿ...",
+errors:{syntax:{what:"if/def/for ನಂತರ colon (:) ಹಾಕಲು ಮರೆತಿದ್ದೀರಿ.",fix:"ಸರಿಯಾದದ್ದು: if name == 'Rahul':",remember:"if, for, while, def ನಂತರ ಯಾವಾಗಲೂ colon (:) ಹಾಕಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},type:{what:"String ಮತ್ತು number ಅನ್ನು + ಮೂಲಕ ನೇರವಾಗಿ ಜೋಡಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"str() ಬಳಸಿ:\nmessage = 'ವಯಸ್ಸು: ' + str(age)",remember:"Number ಅನ್ನು text ಜೊತೆ ಸೇರಿಸಲು str() ಬಳಸಿ.",line:"ಸಾಲು 3",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"},name:{what:"Variable define ಮಾಡದೆ ಬಳಸಿದ್ದೀರಿ.",fix:"ಮೊದಲು:\nstudent_name = 'Priya'",remember:"Python ಮೇಲಿನಿಂದ ಕೆಳಕ್ಕೆ ಚಲಿಸುತ್ತದೆ.",line:"ಸಾಲು 2",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},index:{what:"List ನಲ್ಲಿ ಅಷ್ಟು items ಇಲ್ಲ.",fix:"fruits[2] ಅಥವಾ fruits[-1]",remember:"List index 0 ರಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.",line:"ಸಾಲು 4",sev:"🟡 ಜಾಗ್ರತೆಯಿಂದ ನೋಡಿ"},zerodiv:{what:"ಯಾವ ಸಂಖ್ಯೆಯನ್ನೂ 0 ರಿಂದ ಭಾಗಿಸಲು ಆಗುವುದಿಲ್ಲ.",fix:"if b != 0:\n    result = a / b",remember:"ಭಾಗಿಸುವ ಮೊದಲು ಖಚಿತಪಡಿಸಿ.",line:"ಸಾಲು 4",sev:"🔴 ಸರಿಪಡಿಸಲೇಬೇಕು"}}},
+bn:{name:"বাংলা",badge:"বাংলা",title:"Bhasha Code",subtitle:"Python শেখো — তোমার ভাষায়",write:"📝 তোমার Code এখানে লেখো",output:"⚡ Output / ভুল",run:"Code চালাও",clear:"মুছে ফেলো",explain:"ভুল কেন হলো",errname:"Error এর নাম",line:"Line নম্বর",level:"গুরুত্ব",what:"❌ কী হয়েছে",fix:"✅ এভাবে ঠিক করো",remember:"💡 মনে রেখো",steps:"ধাপে ধাপে",examples:"⚡ Common Errors",speak:"শোনো",stop:"থামো",voiceLabel:"Error explanation শোনো",ready:"Python engine ready",running:"Code চলছে...",tip:"💡 <strong>যেকোনো Python code লিখে চালাও!</strong> Error explanation 🔊 শোনো।",inputPrompt:"এখানে input টাইপ করো...",
+errors:{syntax:{what:"if/def/for এর পরে colon (:) দিতে ভুলে গেছ।",fix:"সঠিক: if name == 'Rahul':",remember:"if, for, while, def এর পরে সবসময় colon (:) দাও।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},type:{what:"String এবং number কে + দিয়ে সরাসরি যোগ করা যায় না।",fix:"str() ব্যবহার করো:\nmessage = 'বয়স: ' + str(age)",remember:"Number কে text এর সাথে যোগ করতে str() ব্যবহার করো।",line:"Line 3",sev:"🔴 অবশ্যই ঠিক করো"},name:{what:"Variable define করার আগেই ব্যবহার করেছ।",fix:"আগে:\nstudent_name = 'Priya'",remember:"Python উপর থেকে নিচে চলে।",line:"Line 2",sev:"🟡 মনোযোগ দাও"},index:{what:"List এ ততগুলো items নেই।",fix:"fruits[2] বা fruits[-1]",remember:"List এর index 0 থেকে শুরু।",line:"Line 4",sev:"🟡 মনোযোগ দাও"},zerodiv:{what:"কোনো সংখ্যাকে 0 দিয়ে ভাগ করা যায় না।",fix:"if b != 0:\n    result = a / b",remember:"ভাগ করার আগে check করো।",line:"Line 4",sev:"🔴 অবশ্যই ঠিক করো"}}},
+mr:{name:"मराठी",badge:"मराठी",title:"Bhasha Code",subtitle:"Python शिका — तुमच्या भाषेत",write:"📝 तुमचा Code इथे लिहा",output:"⚡ Output / चूक",run:"Code चालवा",clear:"साफ करा",explain:"चूक का झाली",errname:"Error चे नाव",line:"Line नंबर",level:"गांभीर्य",what:"❌ काय झाले",fix:"✅ असे दुरुस्त करा",remember:"💡 लक्षात ठेवा",steps:"एक एक पाऊल",examples:"⚡ Common Errors",speak:"ऐका",stop:"थांबा",voiceLabel:"Error explanation ऐका",ready:"Python engine ready",running:"Code चालू आहे...",tip:"💡 <strong>कोणताही Python code लिहा आणि चालवा!</strong> Error explanation 🔊 ऐका.",inputPrompt:"इथे input टाइप करा...",
+errors:{syntax:{what:"if/def/for नंतर colon (:) टाकायला विसरलात.",fix:"बरोबर: if name == 'Rahul':",remember:"if, for, while, def नंतर नेहमी colon (:) टाका.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},type:{what:"String आणि number ला + ने थेट जोडता येत नाही.",fix:"str() वापरा:\nmessage = 'वय: ' + str(age)",remember:"Number ला text सोबत जोडायचे असल्यास str() वापरा.",line:"Line 3",sev:"🔴 नक्की दुरुस्त करा"},name:{what:"Variable define करण्यापूर्वीच वापरलात.",fix:"आधी:\nstudent_name = 'Priya'",remember:"Python वरून खाली चालते.",line:"Line 2",sev:"🟡 लक्ष द्या"},index:{what:"List मध्ये तेवढे items नाहीत.",fix:"fruits[2] किंवा fruits[-1]",remember:"List चा index 0 पासून सुरू होतो.",line:"Line 4",sev:"🟡 लक्ष द्या"},zerodiv:{what:"कोणत्याही संख्येला 0 ने भागता येत नाही.",fix:"if b != 0:\n    result = a / b",remember:"भागाकार करण्यापूर्वी तपासा.",line:"Line 4",sev:"🔴 नक्की दुरुस्त करा"}}},
+gu:{name:"ગુજરાતી",badge:"ગુજરાતી",title:"Bhasha Code",subtitle:"Python શીખો — તમારી ભાષામાં",write:"📝 તમારો Code અહીં લખો",output:"⚡ Output / ભૂલ",run:"Code ચલાવો",clear:"સાફ કરો",explain:"ભૂલ કેમ થઈ",errname:"Error નું નામ",line:"Line નંબર",level:"ગંભીરતા",what:"❌ શું થયું",fix:"✅ આ રીતે સુધારો",remember:"💡 યાદ રાખો",steps:"એક એક પગલું",examples:"⚡ Common Errors",speak:"સાંભળો",stop:"રોકો",voiceLabel:"Error explanation સાંભળો",ready:"Python engine ready",running:"Code ચાલી રહ્યો છે...",tip:"💡 <strong>કોઈ પણ Python code લખો અને ચલાવો!</strong> Error explanation 🔊 સાંભળો.",inputPrompt:"અહીં input ટાઇપ કરો...",
+errors:{syntax:{what:"if/def/for પછી colon (:) મૂકવાનું ભૂલી ગયા.",fix:"સાચું: if name == 'Rahul':",remember:"if, for, while, def પછી હંમેશા colon (:) મૂકો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},type:{what:"String અને number ને + વડે સીધા જોડી ન શકાય.",fix:"str() વાપરો:\nmessage = 'ઉંમર: ' + str(age)",remember:"Number ને text સાથે જોડવા str() વાપરો.",line:"Line 3",sev:"🔴 જરૂર સુધારો"},name:{what:"Variable define કર્યા વગર વાપર્યો.",fix:"પહેલા:\nstudent_name = 'Priya'",remember:"Python ઉપરથી નીચે ચાલે.",line:"Line 2",sev:"🟡 ધ્યાન આપો"},index:{what:"List માં એટલા items નથી.",fix:"fruits[2] અથવા fruits[-1]",remember:"List નો index 0 થી શરૂ થાય.",line:"Line 4",sev:"🟡 ધ્યાન આપો"},zerodiv:{what:"કોઈ પણ number ને 0 વડે ભાગ ન આપી શકાય.",fix:"if b != 0:\n    result = a / b",remember:"ભાગ આપતા પહેલા ચકાસો.",line:"Line 4",sev:"🔴 જરૂર સુધારો"}}},
+pa:{name:"ਪੰਜਾਬੀ",badge:"ਪੰਜਾਬੀ",title:"Bhasha Code",subtitle:"Python ਸਿੱਖੋ — ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ",write:"📝 ਆਪਣਾ Code ਇੱਥੇ ਲਿਖੋ",output:"⚡ Output / ਗਲਤੀ",run:"Code ਚਲਾਓ",clear:"ਸਾਫ਼ ਕਰੋ",explain:"ਗਲਤੀ ਕਿਉਂ ਹੋਈ",errname:"Error ਦਾ ਨਾਮ",line:"Line ਨੰਬਰ",level:"ਗੰਭੀਰਤਾ",what:"❌ ਕੀ ਹੋਇਆ",fix:"✅ ਇਸ ਤਰ੍ਹਾਂ ਠੀਕ ਕਰੋ",remember:"💡 ਯਾਦ ਰੱਖੋ",steps:"ਕਦਮ ਦਰ ਕਦਮ",examples:"⚡ Common Errors",speak:"ਸੁਣੋ",stop:"ਰੋਕੋ",voiceLabel:"Error explanation ਸੁਣੋ",ready:"Python engine ready",running:"Code ਚੱਲ ਰਿਹਾ ਹੈ...",tip:"💡 <strong>ਕੋਈ ਵੀ Python code ਲਿਖੋ ਅਤੇ ਚਲਾਓ!</strong> Error explanation 🔊 ਸੁਣੋ.",inputPrompt:"ਇੱਥੇ input ਟਾਈਪ ਕਰੋ...",
+errors:{syntax:{what:"if/def/for ਤੋਂ ਬਾਅਦ colon (:) ਲਗਾਉਣਾ ਭੁੱਲ ਗਏ।",fix:"ਸਹੀ: if name == 'Rahul':",remember:"if, for, while, def ਤੋਂ ਬਾਅਦ ਹਮੇਸ਼ਾ colon (:) ਲਗਾਓ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},type:{what:"String ਅਤੇ number ਨੂੰ + ਨਾਲ ਸਿੱਧਾ ਜੋੜ ਨਹੀਂ ਸਕਦੇ।",fix:"str() ਵਰਤੋ:\nmessage = 'ਉਮਰ: ' + str(age)",remember:"Number ਨੂੰ text ਨਾਲ ਜੋੜਨ ਲਈ str() ਵਰਤੋ।",line:"Line 3",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"},name:{what:"Variable define ਕੀਤੇ ਬਿਨਾਂ ਵਰਤਿਆ।",fix:"ਪਹਿਲਾਂ:\nstudent_name = 'Priya'",remember:"Python ਉੱਪਰ ਤੋਂ ਹੇਠਾਂ ਚੱਲਦੀ ਹੈ।",line:"Line 2",sev:"🟡 ਧਿਆਨ ਦਿਓ"},index:{what:"List ਵਿੱਚ ਉਨੇ items ਨਹੀਂ ਹਨ।",fix:"fruits[2] ਜਾਂ fruits[-1]",remember:"List ਦਾ index 0 ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦਾ ਹੈ।",line:"Line 4",sev:"🟡 ਧਿਆਨ ਦਿਓ"},zerodiv:{what:"ਕਿਸੇ ਵੀ number ਨੂੰ 0 ਨਾਲ ਭਾਗ ਨਹੀਂ ਦੇ ਸਕਦੇ।",fix:"if b != 0:\n    result = a / b",remember:"ਭਾਗ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚ ਕਰੋ।",line:"Line 4",sev:"🔴 ਜ਼ਰੂਰ ਠੀਕ ਕਰੋ"}}},
+ml:{name:"മലയാളം",badge:"മലയാളം",title:"Bhasha Code",subtitle:"Python പഠിക്കൂ — നിന്റെ ഭാഷയിൽ",write:"📝 നിന്റെ Code ഇവിടെ എഴുതൂ",output:"⚡ Output / തെറ്റ്",run:"Code ഓടിക്കൂ",clear:"മായ്ക്കൂ",explain:"തെറ്റ് എന്തുകൊണ്ട്",errname:"Error പേര്",line:"Line നമ്പർ",level:"ഗൗരവം",what:"❌ എന്ത് സംഭവിച്ചു",fix:"✅ ഇങ്ങനെ ശരിയാക്കൂ",remember:"💡 ഓർക്കൂ",steps:"പടി പടിയായി",examples:"⚡ Common Errors",speak:"കേൾക്കൂ",stop:"നിർത്തൂ",voiceLabel:"Error വിശദീകരണം കേൾക്കൂ",ready:"Python engine ready",running:"Code ഓടുന്നു...",tip:"💡 <strong>ഏത് Python code ഉം എഴുതി ഓടിക്കൂ!</strong> Error വിശദീകരണം 🔊 കേൾക്കൂ.",inputPrompt:"ഇവിടെ input ടൈപ്പ് ചെയ്യൂ...",
+errors:{syntax:{what:"if/def/for ന് ശേഷം colon (:) ഇടാൻ മറന്നു.",fix:"ശരി: if name == 'Rahul':",remember:"if, for, while, def ന് ശേഷം എപ്പോഴും colon (:) ഇടൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},type:{what:"String ഉം number ഉം + ഉപയോഗിച്ച് നേരിട്ട് കൂട്ടാൻ പറ്റില്ല.",fix:"str() ഉപയോഗിക്കൂ:\nmessage = 'പ്രായം: ' + str(age)",remember:"Number നെ text ൽ ചേർക്കാൻ str() ഉപയോഗിക്കൂ.",line:"Line 3",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"},name:{what:"Variable define ചെയ്യാതെ ഉപയോഗിച്ചു.",fix:"ആദ്യം:\nstudent_name = 'Priya'",remember:"Python മുകളിൽ നിന്ന് താഴേക്ക് ഓടുന്നു.",line:"Line 2",sev:"🟡 ശ്രദ്ധിക്കൂ"},index:{what:"List ൽ അത്രയും items ഇല്ല.",fix:"fruits[2] അല്ലെങ്കിൽ fruits[-1]",remember:"List index 0 മുതൽ തുടങ്ങുന്നു.",line:"Line 4",sev:"🟡 ശ്രദ്ധിക്കൂ"},zerodiv:{what:"ഒരു സംഖ്യയെ 0 കൊണ്ട് ഹരിക്കാൻ പറ്റില്ല.",fix:"if b != 0:\n    result = a / b",remember:"ഹരിക്കുന്നതിന് മുൻപ് ഉറപ്പാക്കൂ.",line:"Line 4",sev:"🔴 തീർച്ചയായും ശരിയാക്കൂ"}}},
+or:{name:"ଓଡ଼ିଆ",badge:"ଓଡ଼ିଆ",title:"Bhasha Code",subtitle:"Python ଶିଖ — ନିଜ ଭାଷାରେ",write:"📝 ତୁମର Code ଏଠାରେ ଲେଖ",output:"⚡ Output / ଭୁଲ",run:"Code ଚଲାଅ",clear:"ସଫା କର",explain:"ଭୁଲ କାହିଁକି ହେଲା",errname:"Error ର ନାମ",line:"Line ନମ୍ବର",level:"ଗୁରୁତ୍ୱ",what:"❌ କ'ଣ ହେଲା",fix:"✅ ଏହିପରି ଠିକ୍ କର",remember:"💡 ମନେ ରଖ",steps:"ପଦକ୍ରମେ",examples:"⚡ Common Errors",speak:"ଶୁଣ",stop:"ରୋକ",voiceLabel:"Error ବ୍ୟାଖ୍ୟା ଶୁଣ",ready:"Python engine ready",running:"Code ଚାଲୁ ଅଛି...",tip:"💡 <strong>ଯେକୌଣସି Python code ଲେଖ ଓ ଚଲାଅ!</strong> Error ବ୍ୟାଖ୍ୟା 🔊 ଶୁଣ.",inputPrompt:"ଏଠାରେ input ଟାଇପ୍ କର...",
+errors:{syntax:{what:"if/def/for ପରେ colon (:) ଲଗାଇବା ଭୁଲି ଗଲ।",fix:"ଠିକ୍: if name == 'Rahul':",remember:"if, for, while, def ପରେ ସବୁବେଳେ colon (:) ଲଗାଅ।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},type:{what:"String ଓ number କୁ + ରେ ସିଧା ଯୋଡ଼ି ହୁଏ ନାହିଁ।",fix:"str() ବ୍ୟବହାର କର:\nmessage = 'ବୟସ: ' + str(age)",remember:"Number କୁ text ସହ ଯୋଡ଼ିବାକୁ str() ବ୍ୟବହାର କର।",line:"Line 3",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"},name:{what:"Variable define ନ କରି ବ୍ୟବହାର କଲ।",fix:"ଆଗରୁ:\nstudent_name = 'Priya'",remember:"Python ଉପରୁ ତଳକୁ ଚଲେ।",line:"Line 2",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},index:{what:"List ରେ ସେତିକି items ନାହାଁନ୍ତି।",fix:"fruits[2] ବା fruits[-1]",remember:"List ର index 0 ରୁ ଆରମ୍ଭ ହୁଏ।",line:"Line 4",sev:"🟡 ଧ୍ୟାନ ଦିଅ"},zerodiv:{what:"କୌଣସି ସଂଖ୍ୟାକୁ 0 ରେ ଭାଗ କରି ହୁଏ ନାହିଁ।",fix:"if b != 0:\n    result = a / b",remember:"ଭାଗ କରିବା ଆଗରୁ ଯାଞ୍ଚ କର।",line:"Line 4",sev:"🔴 ନିଶ୍ଚୟ ଠିକ୍ କର"}}}};
+
+// ─── Code Examples ─────────────────────────────────────────────────────
+const codeExamples={
+hello:`# Hello World\nprint("Namaste Duniya! 🙏")\nprint("Hello, World!")\nname = "Bharat"\nprint("Jai " + name + "!")`,
+loop:`# Loop — 1 to 10 table\nfor i in range(1, 11):\n    print(i, "x 2 =", i * 2)\nprint("\\nDone! Total:", 10, "numbers")`,
+function:`# Function — greet anyone\ndef greet(name, language="Hindi"):\n    return f"Namaste {name}! You are learning Python in {language}"\n\nprint(greet("Rahul"))\nprint(greet("Priya", "Telugu"))\nprint(greet("Amit", "Tamil"))`,
+list:`# List operations\nfruits = ["Mango", "Apple", "Banana", "Orange", "Grapes"]\nprint("All fruits:", fruits)\nprint("First:", fruits[0])\nprint("Last:", fruits[-1])\nprint("Total:", len(fruits))\nfruits.sort()\nprint("Sorted:", fruits)\nfruits.append("Papaya")\nprint("After adding Papaya:", fruits)`,
+input:`# Input from user\nname = input("Apna naam batao: ")\ncity = input("Aap kahan se hain: ")\nprint(f"\\nNamaste {name}!")\nprint(f"Aap {city} se hain.")`,
+syntax:`# SyntaxError — colon missing\nname = "Rahul"\nif name == "Rahul"\n    print("Namaste!")`,
+type:`# TypeError — string + number\nage = 20\nmessage = "Meri umar: " + age\nprint(message)`,
+name:`# NameError — undefined variable\nprint("Namaste " + student_name)\nstudent_name = "Priya"`,
+index:`# IndexError — out of range\nfruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[3])`,
+zerodiv:`# ZeroDivisionError\na = 10\nb = 0\nresult = a / b\nprint(result)`
+};
+
+// ─── Voice / TTS ────────────────────────────────────────────────────────
+const voiceLangCodes={hi:'hi-IN',te:'te-IN',ta:'ta-IN',kn:'kn-IN',bn:'bn-IN',mr:'mr-IN',gu:'gu-IN',pa:'pa-IN',ml:'ml-IN',or:'or-IN'};
+let isSpeaking=false;
+let bhasiniApiKey='';
+let bhasiniUserId='';
+
+function speakText(text,lang){
+  if(!('speechSynthesis' in window)){alert('Your browser does not support voice. Please use Chrome.');return;}
+  window.speechSynthesis.cancel();
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang=voiceLangCodes[lang]||'hi-IN';
+  utter.rate=0.82;utter.pitch=1.0;utter.volume=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  const match=voices.find(v=>v.lang.startsWith(voiceLangCodes[lang]?.split('-')[0]||'hi'));
+  if(match)utter.voice=match;
+  utter.onstart=()=>{isSpeaking=true;setSpeakState(true);};
+  utter.onend=()=>{isSpeaking=false;setSpeakState(false);};
+  utter.onerror=()=>{isSpeaking=false;setSpeakState(false);};
+  window.speechSynthesis.speak(utter);
+}
+
+function setSpeakState(speaking){
+  const btn=document.getElementById('speak-btn');
+  const txt=document.getElementById('speak-btn-text');
+  const L=langs[currentLang];
+  if(!btn)return;
+  btn.style.background=speaking?'#f57c00':'#1565c0';
+  txt.textContent=speaking?L.stop:L.speak;
+}
+
+function toggleSpeak(){
+  if(isSpeaking){window.speechSynthesis.cancel();isSpeaking=false;setSpeakState(false);return;}
+  const L=langs[currentLang];
+  const err=currentError?L.errors[currentError]:null;
+  if(!err)return;
+  const text=`${err.what}. ${err.fix}. ${err.remember}`;
+  if(bhasiniApiKey&&bhasiniUserId){bhasiniTTS(text,currentLang);}
+  else{speakText(text,currentLang);}
+}
+
+async function bhasiniTTS(text,lang){
+  const bhasiniLangMap={hi:'hi',te:'te',ta:'ta',kn:'kn',bn:'bn',mr:'mr',gu:'gu',pa:'pa',ml:'ml',or:'or'};
+  try{
+    const configRes=await fetch('https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','userID':bhasiniUserId,'ulcaApiKey':bhasiniApiKey},
+      body:JSON.stringify({pipelineTasks:[{taskType:'tts',config:{language:{sourceLanguage:bhasiniLangMap[lang]||'hi'}}}],pipelineRequestConfig:{pipelineId:'ai4bharat/indic-tts'}})
+    });
+    const cd=await configRes.json();
+    const cbUrl=cd.pipelineInferenceAPIEndPoint?.callbackUrl;
+    const svcId=cd.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
+    const iKey=cd.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value;
+    if(!cbUrl||!svcId){speakText(text,lang);return;}
+    const ttsRes=await fetch(cbUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':iKey},
+      body:JSON.stringify({pipelineTasks:[{taskType:'tts',config:{language:{sourceLanguage:bhasiniLangMap[lang]||'hi'},serviceId:svcId,gender:'female'}}],inputData:{input:[{source:text}]}})
+    });
+    const td=await ttsRes.json();
+    const ab64=td.pipelineResponse?.[0]?.audio?.[0]?.audioContent;
+    if(!ab64){speakText(text,lang);return;}
+    const audio=new Audio('data:audio/wav;base64,'+ab64);
+    audio.onplay=()=>{isSpeaking=true;setSpeakState(true);};
+    audio.onended=()=>{isSpeaking=false;setSpeakState(false);};
+    audio.play();
+    document.getElementById('bhasini-status').textContent='🎤 Bhasini TTS';
+    document.getElementById('bhasini-status').style.background='#e8f5e9';
+  }catch(e){console.log('Bhasini TTS failed, fallback:',e);speakText(text,lang);}
+}
+
+function saveBhasiniKey(){
+  bhasiniUserId=document.getElementById('bhasini-userid').value.trim();
+  bhasiniApiKey=document.getElementById('bhasini-apikey').value.trim();
+  if(bhasiniUserId&&bhasiniApiKey){
+    document.getElementById('bhasini-status').textContent='✅ Bhasini Connected';
+    document.getElementById('bhasini-status').style.background='#e8f5e9';
+    document.getElementById('bhasini-status').style.color='#2e7d32';
+    document.getElementById('api-config').classList.remove('visible');
+    alert('Bhasini API connected! अब voice बेहतर होगी।');
   }
-};
+}
 
-// ─── Code Examples ───────────────────────────────────────────────────────────
-const codeExamples = {
-  hello:`# Hello World — Python का पहला program\nprint("Namaste Duniya!")\nprint("Hello, World!")\nprint("Python सीखना मज़ेदार है!")`,
-  loop:`# Loop Example — गिनती करो\nfor i in range(1, 11):\n    print(i, "x 2 =", i * 2)\nprint("\\nLoop खत्म!")\nprint("Total numbers:", 10)`,
-  function:`# Function Example — अपना function बनाओ\ndef namaste(name):\n    return "Namaste, " + name + "! 🙏"\n\nprint(namaste("Rahul"))\nprint(namaste("Priya"))\nprint(namaste("Amit"))`,
-  list:`# List Example — fruits की list\nfruits = ["Mango", "Apple", "Banana", "Orange"]\nprint("Fruits:", fruits)\nprint("First:", fruits[0])\nprint("Last:", fruits[-1])\nprint("Total fruits:", len(fruits))\nfruits.append("Grapes")\nprint("After adding Grapes:", fruits)`,
-  input:`# Input Example — user से नाम पूछो\nname = input("Apna naam batao: ")\nage = input("Apni umar batao: ")\nprint("\\nNamaste " + name + "!")\nprint("Aap " + age + " saal ke hain.")`,
-  syntax:`# SyntaxError Example\nname = "Rahul"\nif name == "Rahul"\n    print("Namaste Rahul!")`,
-  type:`# TypeError Example\nage = 20\nmessage = "Meri umar hai: " + age\nprint(message)`,
-  name:`# NameError Example\nprint("Namaste " + student_name)\nstudent_name = "Priya"`,
-  index:`# IndexError Example\nfruits = ["apple", "banana", "mango"]\nprint(fruits[0])\nprint(fruits[3])`,
-  zerodiv:`# ZeroDivisionError Example\na = 10\nb = 0\nresult = a / b\nprint(result)`
-};
-
-// ─── Hindi error explanations for runtime errors ─────────────────────────────
-const errorExplain = {
-  SyntaxError:{type:'syntax'},TypeError:{type:'type'},NameError:{type:'name'},
-  IndexError:{type:'index'},ZeroDivisionError:{type:'zerodiv'},
-  AttributeError:{type:'attr'},ValueError:{type:'value'},IndentationError:{type:'indent'}
-};
-
-// ─── State ───────────────────────────────────────────────────────────────────
-let currentLang = 'hi';
-let currentError = null;
-let inputResolve = null;
-let outputBuffer = '';
-
-// ─── Skulpt Python Runner ─────────────────────────────────────────────────────
-function builtinRead(x) {
-  if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-    throw "File not found: '" + x + "'";
+// ─── Skulpt Python Runner ───────────────────────────────────────────────
+function builtinRead(x){
+  if(Sk.builtinFiles===undefined||Sk.builtinFiles["files"][x]===undefined)throw"File not found: '"+x+"'";
   return Sk.builtinFiles["files"][x];
 }
+let outputBuffer='';
+let inputResolve=null;
 
-function outf(text) {
-  outputBuffer += text;
-  const ob = document.getElementById('output-box');
-  ob.className = 'output-box has-output';
-  ob.textContent = outputBuffer;
-  ob.scrollTop = ob.scrollHeight;
+function outf(text){
+  outputBuffer+=text;
+  const ob=document.getElementById('output-box');
+  ob.className='output-box has-output';
+  ob.textContent=outputBuffer;
+  ob.scrollTop=ob.scrollHeight;
 }
 
-function inputf(prompt) {
-  return new Promise((resolve) => {
+function inputf(prompt){
+  return new Promise((resolve)=>{
     outf(prompt);
-    inputResolve = resolve;
-    const inp = document.getElementById('inline-input');
-    const btn = document.getElementById('submit-input-btn');
-    inp.className = 'inline-input visible';
-    btn.className = 'submit-input-btn visible';
-    inp.placeholder = langs[currentLang].inputPrompt;
-    inp.value = '';
-    inp.focus();
-    inp.onkeydown = (e) => { if (e.key === 'Enter') submitInput(); };
+    inputResolve=resolve;
+    const inp=document.getElementById('inline-input');
+    const btn=document.getElementById('submit-input-btn');
+    inp.className='inline-input visible';
+    btn.className='submit-input-btn visible';
+    inp.placeholder=langs[currentLang].inputPrompt;
+    inp.value='';inp.focus();
+    inp.onkeydown=(e)=>{if(e.key==='Enter')submitInput();};
   });
 }
 
-function submitInput() {
-  const inp = document.getElementById('inline-input');
-  const val = inp.value;
-  inp.className = 'inline-input';
-  document.getElementById('submit-input-btn').className = 'submit-input-btn';
-  outf(val + '\n');
-  if (inputResolve) { inputResolve(val); inputResolve = null; }
+function submitInput(){
+  const inp=document.getElementById('inline-input');
+  const val=inp.value;
+  inp.className='inline-input';
+  document.getElementById('submit-input-btn').className='submit-input-btn';
+  outf(val+'\n');
+  if(inputResolve){inputResolve(val);inputResolve=null;}
 }
 
-async function runCode() {
-  const code = document.getElementById('code-input').value.trim();
-  const L = langs[currentLang];
-  if (!code) return;
-
-  outputBuffer = '';
-  const ob = document.getElementById('output-box');
-  ob.className = 'output-box waiting';
-  ob.textContent = '';
-
-  document.getElementById('explanation').style.display = 'none';
-  document.getElementById('steps-section').style.display = 'none';
-
-  const btn = document.getElementById('btn-run');
-  btn.disabled = true;
-  setStatus('running', L.running);
-
-  Sk.configure({
-    output: outf,
-    read: builtinRead,
-    inputfun: inputf,
-    inputfunTakesPrompt: true,
-    __future__: Sk.python3
-  });
-
-  try {
-    await Sk.misceval.asyncToPromise(() =>
-      Sk.importMainWithBody("<stdin>", false, code, true)
-    );
-    setStatus('ready', '✅ Code successfully run!');
-    if (!outputBuffer) {
-      ob.className = 'output-box has-output';
-      ob.textContent = '(No output — code ran successfully)';
-    }
-  } catch(e) {
-    const errMsg = e.toString();
-    ob.className = 'output-box has-error';
-    ob.textContent = errMsg;
-    setStatus('error', '❌ Error detected');
+async function runCode(){
+  const code=document.getElementById('code-input').value.trim();
+  const L=langs[currentLang];
+  if(!code)return;
+  outputBuffer='';
+  const ob=document.getElementById('output-box');
+  ob.className='output-box';ob.textContent='';
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('steps-section').style.display='none';
+  document.getElementById('voice-bar').style.display='none';
+  window.speechSynthesis?.cancel();isSpeaking=false;
+  const btn=document.getElementById('btn-run');
+  btn.disabled=true;setStatus('running',L.running);
+  Sk.configure({output:outf,read:builtinRead,inputfun:inputf,inputfunTakesPrompt:true,__future__:Sk.python3});
+  try{
+    await Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody("<stdin>",false,code,true));
+    setStatus('ready','✅ Code successfully executed!');
+    if(!outputBuffer){ob.className='output-box has-output';ob.textContent='(Code ran — no output produced)';}
+  }catch(e){
+    const errMsg=e.toString();
+    ob.className='output-box has-error';ob.textContent=errMsg;
+    setStatus('error','❌ Error found — see explanation below');
     analyzeAndExplain(errMsg);
   }
-
-  btn.disabled = false;
+  btn.disabled=false;
 }
 
-function analyzeAndExplain(errMsg) {
-  const L = langs[currentLang];
-  const errTypes = Object.keys(errorExplain);
-  let matched = null;
-  for (const et of errTypes) {
-    if (errMsg.includes(et)) { matched = et; break; }
+function analyzeAndExplain(errMsg){
+  const L=langs[currentLang];
+  const errorMap={SyntaxError:'syntax',TypeError:'type',NameError:'name',IndexError:'index',ZeroDivisionError:'zerodiv',AttributeError:'name',IndentationError:'syntax'};
+  let matched=null;
+  for(const[et,type] of Object.entries(errorMap)){if(errMsg.includes(et)){matched=type;break;}}
+  const errTypeName=Object.keys(errorMap).find(k=>errMsg.includes(k))||'Error';
+  const err=matched?L.errors[matched]:null;
+  document.getElementById('explanation').style.display='block';
+  document.getElementById('error-name').textContent=errTypeName;
+  document.getElementById('error-line').textContent=extractLine(errMsg);
+  const sev=document.getElementById('error-severity');
+  if(err){
+    sev.textContent=err.sev;
+    sev.style.color=err.sev.includes('🔴')?'#d32f2f':'#f57c00';
+    document.getElementById('what-happened').textContent=err.what;
+    document.getElementById('how-to-fix').textContent=err.fix;
+    document.getElementById('remember-this').textContent=err.remember;
+  } else {
+    sev.textContent='🔴';
+    document.getElementById('what-happened').textContent=errMsg;
+    document.getElementById('how-to-fix').textContent='Error message ध्यान से पढ़ो और line number देखो।';
+    document.getElementById('remember-this').textContent='हर error में एक clue होता है।';
   }
-
-  if (!matched) {
-    // Generic explanation
-    document.getElementById('explanation').style.display = 'block';
-    document.getElementById('error-name').textContent = 'Error';
-    document.getElementById('error-line').textContent = extractLine(errMsg);
-    document.getElementById('error-severity').textContent = '🔴';
-    document.getElementById('what-happened').textContent = errMsg;
-    document.getElementById('how-to-fix').textContent = 'Error message ध्यान से पढ़ो और line number देखो।';
-    document.getElementById('remember-this').textContent = 'हर error में एक clue होता है — message और line number देखो।';
-    return;
-  }
-
-  const errType = errorExplain[matched].type;
-  const err = L.errors[errType];
-  if (!err) return;
-
-  currentError = errType;
-  document.getElementById('explanation').style.display = 'block';
-  document.getElementById('error-name').textContent = matched;
-  document.getElementById('error-line').textContent = extractLine(errMsg);
-  document.getElementById('error-severity').textContent = err.sev;
-  document.getElementById('error-severity').style.color = err.sev.includes('🔴') ? '#d32f2f' : '#f57c00';
-  document.getElementById('what-happened').textContent = err.what;
-  document.getElementById('how-to-fix').textContent = err.fix;
-  document.getElementById('remember-this').textContent = err.remember;
-  document.getElementById('lang-badge').textContent = L.badge;
+  document.getElementById('lang-badge').textContent=L.badge;
+  currentError=matched;
+  // Show voice bar
+  const vb=document.getElementById('voice-bar');
+  vb.style.display='flex';
+  document.getElementById('voice-label').textContent=L.voiceLabel;
+  document.getElementById('speak-btn-text').textContent=L.speak;
 }
 
-function extractLine(errMsg) {
-  const m = errMsg.match(/line (\d+)/i);
-  return m ? 'Line ' + m[1] : '—';
+function extractLine(errMsg){
+  const m=errMsg.match(/line (\d+)/i);
+  return m?'Line '+m[1]:'—';
 }
 
-// ─── UI Helpers ──────────────────────────────────────────────────────────────
-function setStatus(type, text) {
-  const bar = document.getElementById('status-bar');
-  const dot = document.getElementById('status-dot');
-  const stxt = document.getElementById('status-text');
-  bar.className = 'status-bar' + (type !== 'ready' ? ' ' + type : '');
-  dot.className = 'status-dot' + (type === 'running' ? ' pulse' : '');
-  stxt.textContent = text;
+// ─── UI Helpers ────────────────────────────────────────────────────────
+function setStatus(type,text){
+  const bar=document.getElementById('status-bar');
+  const dot=document.getElementById('status-dot');
+  bar.className='status-bar'+(type!=='ready'?' '+type:'');
+  dot.className='status-dot'+(type==='running'?' pulse':'');
+  document.getElementById('status-text').textContent=text;
 }
 
-function loadExample(type) {
-  document.getElementById('code-input').value = codeExamples[type] || '';
-  document.getElementById('output-box').className = 'output-box waiting';
-  document.getElementById('output-box').textContent = langs[currentLang].placeholder;
-  document.getElementById('explanation').style.display = 'none';
-  document.getElementById('steps-section').style.display = 'none';
-  outputBuffer = '';
-  setStatus('ready', langs[currentLang].ready);
+function loadExample(type){
+  document.getElementById('code-input').value=codeExamples[type]||'';
+  document.getElementById('output-box').className='output-box';
+  document.getElementById('output-box').textContent=langs[currentLang].ready;
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('steps-section').style.display='none';
+  document.getElementById('voice-bar').style.display='none';
+  outputBuffer='';currentError=null;
+  window.speechSynthesis?.cancel();isSpeaking=false;
+  setStatus('ready',langs[currentLang].ready);
 }
 
-function clearAll() {
-  document.getElementById('code-input').value = '';
-  document.getElementById('output-box').className = 'output-box waiting';
-  document.getElementById('output-box').textContent = langs[currentLang].placeholder;
-  document.getElementById('explanation').style.display = 'none';
-  document.getElementById('steps-section').style.display = 'none';
-  document.getElementById('inline-input').className = 'inline-input';
-  document.getElementById('submit-input-btn').className = 'submit-input-btn';
-  outputBuffer = '';
-  currentError = null;
-  setStatus('ready', langs[currentLang].ready);
+function clearAll(){
+  document.getElementById('code-input').value='';
+  document.getElementById('output-box').className='output-box';
+  document.getElementById('output-box').textContent=langs[currentLang].ready;
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('steps-section').style.display='none';
+  document.getElementById('voice-bar').style.display='none';
+  document.getElementById('inline-input').className='inline-input';
+  document.getElementById('submit-input-btn').className='submit-input-btn';
+  outputBuffer='';currentError=null;
+  window.speechSynthesis?.cancel();isSpeaking=false;
+  setStatus('ready',langs[currentLang].ready);
 }
 
-function switchLanguage(lang) {
-  currentLang = lang;
-  const L = langs[lang];
-  document.getElementById('app-title').textContent = L.title;
-  document.getElementById('app-subtitle').textContent = L.subtitle;
-  document.getElementById('label-write').textContent = L.write;
-  document.getElementById('label-output').textContent = L.output;
-  document.getElementById('btn-run-text').textContent = L.run;
-  document.getElementById('btn-clear-text').textContent = L.clear;
-  document.getElementById('label-explain').textContent = L.explain;
-  document.getElementById('label-errname').textContent = L.errname;
-  document.getElementById('label-line').textContent = L.line;
-  document.getElementById('label-level').textContent = L.level;
-  document.getElementById('label-what').textContent = L.what;
-  document.getElementById('label-fix').textContent = L.fix;
-  document.getElementById('label-remember').textContent = L.remember;
-  document.getElementById('label-steps').textContent = L.steps;
-  document.getElementById('label-examples').textContent = L.examples;
-  document.getElementById('lang-badge').textContent = L.badge;
-  document.getElementById('tip-box').innerHTML = L.tip;
-  document.getElementById('status-text').textContent = L.ready;
-  document.getElementById('inline-input').placeholder = L.inputPrompt;
-  renderLangCards();
-  renderErrorCards();
-  if (currentError) {
-    const err = L.errors[currentError];
-    if (err) {
-      document.getElementById('what-happened').textContent = err.what;
-      document.getElementById('how-to-fix').textContent = err.fix;
-      document.getElementById('remember-this').textContent = err.remember;
-    }
+// ─── Language Switch ────────────────────────────────────────────────────
+let currentLang='hi';
+let currentError=null;
+
+function switchLanguage(lang){
+  currentLang=lang;
+  const L=langs[lang];
+  document.getElementById('app-title').textContent=L.title;
+  document.getElementById('app-subtitle').textContent=L.subtitle;
+  document.getElementById('label-write').textContent=L.write;
+  document.getElementById('label-output').textContent=L.output;
+  document.getElementById('btn-run-text').textContent=L.run;
+  document.getElementById('btn-clear-text').textContent=L.clear;
+  document.getElementById('label-explain').textContent=L.explain;
+  document.getElementById('label-errname').textContent=L.errname;
+  document.getElementById('label-line').textContent=L.line;
+  document.getElementById('label-level').textContent=L.level;
+  document.getElementById('label-what').textContent=L.what;
+  document.getElementById('label-fix').textContent=L.fix;
+  document.getElementById('label-remember').textContent=L.remember;
+  document.getElementById('label-steps').textContent=L.steps;
+  document.getElementById('label-examples').textContent=L.examples;
+  document.getElementById('lang-badge').textContent=L.badge;
+  document.getElementById('tip-box').innerHTML=L.tip;
+  document.getElementById('status-text').textContent=L.ready;
+  document.getElementById('inline-input').placeholder=L.inputPrompt;
+  document.getElementById('voice-label').textContent=L.voiceLabel;
+  document.getElementById('speak-btn-text').textContent=L.speak;
+  renderLangCards();renderErrorCards();
+  if(currentError&&L.errors[currentError]){
+    const err=L.errors[currentError];
+    document.getElementById('what-happened').textContent=err.what;
+    document.getElementById('how-to-fix').textContent=err.fix;
+    document.getElementById('remember-this').textContent=err.remember;
   }
 }
 
-function renderLangCards() {
-  const c = document.getElementById('lang-cards');
-  c.innerHTML = '';
-  Object.entries(langs).forEach(([code, L]) => {
-    const d = document.createElement('div');
-    d.className = 'lang-card' + (code === currentLang ? ' active' : '');
-    d.textContent = L.name;
-    d.onclick = () => { document.getElementById('lang-select').value = code; switchLanguage(code); };
+function renderLangCards(){
+  const c=document.getElementById('lang-cards');c.innerHTML='';
+  Object.entries(langs).forEach(([code,L])=>{
+    const d=document.createElement('div');
+    d.className='lang-card'+(code===currentLang?' active':'');
+    d.textContent=L.name;
+    d.onclick=()=>{document.getElementById('lang-select').value=code;switchLanguage(code);};
     c.appendChild(d);
   });
 }
 
-function renderErrorCards() {
-  const c = document.getElementById('error-cards');
-  c.innerHTML = '';
-  const L = langs[currentLang];
-  const items = [
+function renderErrorCards(){
+  const c=document.getElementById('error-cards');c.innerHTML='';
+  const items=[
     {type:'syntax',name:'SyntaxError',desc:{hi:'लिखने में गलती',te:'రాయడంలో తప్పు',ta:'எழுதும் தவறு',kn:'ಬರೆಯುವಲ್ಲಿ ತಪ್ಪು',bn:'লেখায় ভুল',mr:'लिहण्यात चूक',gu:'લખવામાં ભૂલ',pa:'ਲਿਖਣ ਵਿੱਚ ਗਲਤੀ',ml:'എഴുത്തിലെ തെറ്റ്',or:'ଲେଖିବାରେ ଭୁଲ'}},
-    {type:'type',name:'TypeError',desc:{hi:'गलत type का data',te:'తప్పు type data',ta:'தவறான type',kn:'ತಪ್ಪು type',bn:'ভুল type',mr:'चुकीचा type',gu:'ખોટો type',pa:'ਗਲਤ type',ml:'തെറ്റായ type',or:'ଭୁଲ type'}},
-    {type:'name',name:'NameError',desc:{hi:'Variable नहीं मिला',te:'Variable దొరకలేదు',ta:'Variable இல்லை',kn:'Variable ಸಿಗಲಿಲ್ಲ',bn:'Variable নেই',mr:'Variable नाही',gu:'Variable મળ્યો નહિ',pa:'Variable ਨਹੀਂ ਮਿਲਿਆ',ml:'Variable കിട്ടിയില്ല',or:'Variable ମିଳିଲା ନାହିଁ'}},
-    {type:'index',name:'IndexError',desc:{hi:'List से बाहर गए',te:'List బయటకి వెళ్ళారు',ta:'List வெளியே',kn:'List ಹೊರಕ್ಕೆ',bn:'List এর বাইরে',mr:'List बाहेर',gu:'List બહાર',pa:'List ਤੋਂ ਬਾਹਰ',ml:'List ൽ നിന്ന് പുറത്ത്',or:'List ବାହାରକୁ ଗଲ'}},
-    {type:'zerodiv',name:'ZeroDivisionError',desc:{hi:'Zero से भाग दिया',te:'Zero తో divide',ta:'பூஜ்யத்தால் வகுத்தீர்கள்',kn:'Zero ನಿಂದ ಭಾಗಿಸಿದರು',bn:'শূন্য দিয়ে ভাগ',mr:'शून्याने भागलात',gu:'શૂન્ય વડે ભાગ',pa:'ਜ਼ੀਰੋ ਨਾਲ ਭਾਗ',ml:'പൂജ്യം കൊണ്ട് ഹരിച്ചു',or:'Zero ରେ ଭାଗ ଦେଲ'}}
+    {type:'type',name:'TypeError',desc:{hi:'गलत type का data',te:'తప్పు type',ta:'தவறான type',kn:'ತಪ್ಪು type',bn:'ভুল type',mr:'चुकीचा type',gu:'ખોટો type',pa:'ਗਲਤ type',ml:'തെറ്റായ type',or:'ଭୁଲ type'}},
+    {type:'name',name:'NameError',desc:{hi:'Variable नहीं मिला',te:'Variable దొరకలేదు',ta:'Variable இல்லை',kn:'Variable ಸಿಗಲಿಲ್ಲ',bn:'Variable নেই',mr:'Variable नाही',gu:'Variable મળ્યો નહિ',pa:'Variable ਨਹੀਂ',ml:'Variable ഇല്ല',or:'Variable ନାହିଁ'}},
+    {type:'index',name:'IndexError',desc:{hi:'List से बाहर',te:'List బయటకి',ta:'List வெளியே',kn:'List ಹೊರಕ್ಕೆ',bn:'List বাইরে',mr:'List बाहेर',gu:'List બહાર',pa:'List ਤੋਂ ਬਾਹਰ',ml:'List പുറത്ത്',or:'List ବାହାର'}},
+    {type:'zerodiv',name:'ZeroDivisionError',desc:{hi:'Zero से भाग',te:'Zero తో divide',ta:'பூஜ்யத்தால்',kn:'Zero ಭಾಗ',bn:'শূন্যে ভাগ',mr:'शून्य भाग',gu:'શૂન્ય ભાગ',pa:'ਜ਼ੀਰੋ ਭਾਗ',ml:'പൂജ്യം',or:'Zero ଭାଗ'}}
   ];
-  items.forEach(item => {
-    const d = document.createElement('div');
-    d.className = 'error-card';
-    d.innerHTML = `<div class="etype">${item.name}</div><div class="edesc">${item.desc[currentLang]||item.desc.hi}</div>`;
-    d.onclick = () => loadExample(item.type);
+  items.forEach(item=>{
+    const d=document.createElement('div');d.className='error-card';
+    d.innerHTML=`<div class="etype">${item.name}</div><div class="edesc">${item.desc[currentLang]||item.desc.hi}</div>`;
+    d.onclick=()=>loadExample(item.type);
     c.appendChild(d);
   });
 }
 
-// Tab key support in textarea
-document.getElementById('code-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    const start = this.selectionStart;
-    const end = this.selectionEnd;
-    this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
-    this.selectionStart = this.selectionEnd = start + 4;
-  }
-  if (e.ctrlKey && e.key === 'Enter') { runCode(); }
+// Tab support + Ctrl+Enter
+document.getElementById('code-input').addEventListener('keydown',function(e){
+  if(e.key==='Tab'){e.preventDefault();const s=this.selectionStart;this.value=this.value.substring(0,s)+'    '+this.value.substring(this.selectionEnd);this.selectionStart=this.selectionEnd=s+4;}
+  if(e.ctrlKey&&e.key==='Enter'){runCode();}
 });
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-renderLangCards();
-renderErrorCards();
-loadExample('hello');
+// Load voices for Web Speech
+window.speechSynthesis?.addEventListener?.('voiceschanged',()=>window.speechSynthesis.getVoices());
+
+// ─── Init ──────────────────────────────────────────────────────────────
+renderLangCards();renderErrorCards();loadExample('hello');
 </script>
 </body>
 </html>
